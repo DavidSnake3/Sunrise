@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Pagination } from "@heroui/react";
+import { Button } from "@heroui/react";
 
 import {
   precioHabitacionService,
@@ -16,10 +16,10 @@ const PreciosHabitacionPage = () => {
   const { user } = useAuth();
 
   const [precios, setPrecios] = useState<PrecioHabitacion[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     const loadPrecios = async () => {
