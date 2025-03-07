@@ -1,0 +1,44 @@
+Para almacenar las fechas de cada crucero
+  const [fechasCruceros, setFechasCruceros] = useState<{
+    [key: number]: FechaCrucero[];
+}>({});
+const getFechasCrucero = async (
+    id_crucero: number,
+  ): Promise<FechaCrucero[]> => {
+    try {
+      const data = await fechaCruceroService.getByCrucero(id_crucero);
+
+      if (!data) {
+        setError("Error al extraer las fechas del crucero");
+
+        return [];
+      } else {
+        return data;
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error desconocido";
+
+      setError(errorMessage);
+
+      return [];
+    }
+  };
+
+  // Llamar a getFechasCrucero para cada crucero y almacenar las fechas
+  useEffect(() => {
+    const fetchFechas = async () => {
+      const fechasMap: { [key: number]: FechaCrucero[] } = {};
+
+      for (const crucero of crucerosFiltrados) {
+        const fechas = await getFechasCrucero(crucero.id_crucero);
+
+        fechasMap[crucero.id_crucero] = fechas;
+      }
+      setFechasCruceros(fechasMap);
+    };
+
+    if (crucerosFiltrados.length > 0) {
+      fetchFechas();
+    }
+  }, [crucerosFiltrados]);

@@ -1,0 +1,100 @@
+.crucero .nav {
+  background-color: #f05235;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  padding: 5px 20px 5px;
+  max-height: none;
+  .buscar {
+    max-width: 400px;
+    min-width: 200px;
+    border-radius: 8px;
+  }
+  .fechas {
+    max-width: 250px;
+    min-width: 200px;
+    border-radius: 8px;
+  }
+  .destino {
+    max-width: 200px;
+    min-width: 200px;
+    border-radius: 8px;
+  }
+  .dias {
+    max-width: 80px;
+    border-radius: 8px;
+  }
+  .clean {
+    i {
+      font-size: 30px;
+      color: white;
+    }
+    i:hover {
+      color: rgb(197, 197, 197);
+    }
+  }
+}
+
+.crucero .contenido {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 20px;
+  color: #333;
+  width: 100%;
+  height: 100%;
+
+  .card {
+    overflow: hidden;
+    max-width: 350px;
+    box-shadow: 3px 3px 15px 4px rgba(0, 0, 0, 0.3);
+    .imagen {
+      width: 100%;
+      img {
+        width: 100%;
+      }
+    }
+
+    .detalle_1 {
+      margin: 0 0 10px;
+      .name {
+        color: #f05235;
+        margin: 0 0 10px;
+        font-size: 1.05rem;
+      }
+      .info {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .fechasList {
+        padding: 5px 0 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      p {
+        font-size: 0.85rem;
+        i {
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .detalle_2 {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .card:hover {
+    transition: all ease 0.5s;
+    transform: scale(1.05);
+  }
+}

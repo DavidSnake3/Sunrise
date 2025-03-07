@@ -1,0 +1,41 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: #f05235;
+  overflow: hidden;
+  padding: 4px 10px 10px;
+  border-top-right-radius: 15px;
+  justify-content: space-between;
+}
+.sidebar.view {
+  width: 220px;
+  min-width: 220px;
+}
+.sidebar.hide {
+  width: 59px;
+  min-width: 59px;
+}
+
+.sidebar .btn {
+  color: white;
+  background-color: #f05235;
+  width: 200px;
+  border-radius: 6px;
+}
+.sidebar .btn i {
+  font-size: 25px;
+}
+.sidebar .btn.select,
+.sidebar .btn:hover {
+  color: white;
+  background-color: #c23b23;
+  font-weight: bold;
+}
+.sidebar .btn.select {
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+/*.sidebar.hide .btn.select, .sidebar.hide .btn:hover{width: 60px;}*/
+
+.divAdmin {
+  width: 100%;
+}

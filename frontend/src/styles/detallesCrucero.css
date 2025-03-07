@@ -1,0 +1,123 @@
+.crucero_detalle {
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    background-color: #f8f9fa;
+    overflow: hidden;
+    img {
+      max-width: 600px;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+    .header_detalle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      text-align: start;
+      .name {
+        padding: 5px 15px;
+        background-color: #f05235; /* Azul marino */
+        color: white;
+        font-weight: bold;
+        font-size: 2rem;
+        text-transform: uppercase;
+      }
+      .detalle_contenido {
+        padding: 10px 20px;
+        p {
+          font-size: 1.1rem;
+          i {
+            color: #f05235;
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
+
+  .crucero_nav {
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    button {
+      flex: 1;
+      min-width: 150px; /* Evita que los botones sean demasiado pequeños */
+      padding: 12px 15px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+      background-color: #ffffff;
+      color: #f05235;
+      border: 1px solid #f05235;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    button:hover,
+    button.select {
+      background-color: #f05235;
+      color: white;
+      box-shadow: inset 4px 4px 10px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  
+}
+
+@media (max-width: 768px) {
+  .crucero_detalle {
+    .header {
+      text-align: center;
+      img {
+        max-width: 100%;
+      }
+      .header_detalle {
+        .name {
+          font-size: 1.8rem;
+        }
+        .detalle_contenido {
+          padding: 8px 17px;
+          p {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+
+    .crucero_nav {
+      flex-wrap: wrap;
+      button {
+        flex: 1 1 48%; /* Ocupa la mitad del ancho */
+        min-width: auto;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .crucero_detalle {
+    .header_detalle {
+      .name {
+        font-size: 1.5rem;
+      }
+      .detalle_contenido {
+        padding: 5px 12px;
+        p {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .crucero_nav {
+      button {
+        flex: 1 1 100%;
+      }
+    }
+  }
+}
