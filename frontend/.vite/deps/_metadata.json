@@ -2,7 +2,45 @@
   "hash": "53b0ab60",
   "configHash": "869ea0b5",
   "lockfileHash": "844123fe",
-  "browserHash": "4363fb91",
-  "optimized": {},
-  "chunks": {}
+  "browserHash": "242a3279",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "6d156f0d",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "d01290dd",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "cb750a25",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "cfeaa5ec",
+      "needsInterop": false
+    },
+    "@heroui/system": {
+      "src": "../../node_modules/@heroui/system/dist/index.mjs",
+      "file": "@heroui_system.js",
+      "fileHash": "0f1d8393",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-2MNGT2ZG": {
+      "file": "chunk-2MNGT2ZG.js"
+    },
+    "chunk-UTEJFLXC": {
+      "file": "chunk-UTEJFLXC.js"
+    }
+  }
 }
