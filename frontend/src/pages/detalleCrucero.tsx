@@ -9,9 +9,20 @@ import {
   TableCell,
 } from "@heroui/react";
 
-import { cruceroService, Crucero } from "../api/cruceros";
+import {
+  cruceroService,
+  Crucero,
+  fechaCruceroService,
+  FechaCrucero,
+} from "../api/cruceros";
 import { barcoService, Barco } from "../api/barcos";
 import { itinerarioService, Itinerario } from "../api/itinerario";
+import { puertoService, Puerto } from "../api/puertos";
+import {
+  precioHabitacionService,
+  PrecioHabitacion,
+} from "../api/precioHabitacion";
+import { habitacionService, Habitacion } from "../api/habitaciones";
 
 import DefaultLayout from "@/layouts/default";
 import LoadingScreen from "@/components/loading";
@@ -143,23 +154,118 @@ export default function DocsPage() {
 }
 
 const IndexSalida = ({ idCrucero }: { idCrucero: number }) => {
-  return <p>Fechas Salida</p>;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [fechas, setFechas] = useState<FechaCrucero[]>([]);
+  const [habitaciones, setHabitaciones] = useState<Habitacion[]>([]);
+  const [precios, setPrecios] = useState<PrecioHabitacion[]>([]);
+  const [crucero, setCrucero] = useState<Crucero | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataCrucero = (await cruceroService.getAll()).find(
+          (c) => c.id_crucero === Number(idCrucero),
+        );
+        const dataFechas = (await fechaCruceroService.getAll()).filter(
+          (f) =>
+            f.id_crucero === Number(idCrucero) &&
+            new Date(f.fecha_inicio).getTime() >= Date.now(),
+        );
+        const dataPrecio = await precioHabitacionService.getALL();
+        const dataHabitacion = await habitacionService.getAll();
+
+        if (!dataFechas || !dataPrecio || !dataCrucero || !dataHabitacion) {
+          setError("Error al extraer la data");
+        } else {
+          setCrucero(dataCrucero);
+          setFechas(dataFechas);
+          setPrecios(dataPrecio);
+          setHabitaciones(dataHabitacion);
+        }
+      } catch (err) {
+        setError("Error al obtener los datos: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idCrucero]);
+
+  if (loading)
+    return (
+      <div className="flew-grow h-80">
+        {" "}
+        {LoadingScreen("Fechas de Salida")}{" "}
+      </div>
+    );
+  if (error) return <p>Error: {error}.</p>;
+
+  return (
+    <div>
+      {fechas.map((f) => {
+        const fechaInicio = new Date(f.fecha_inicio + "T12:00:00Z"); // Convertimos la fecha
+        const fechaFin = new Date(fechaInicio); // Creamos una copia para evitar mutar la original
+
+        fechaFin.setDate(fechaFin.getDate() + crucero?.cantidad_dias); // Sumamos 1 día correctamente
+
+        return (
+          <div key={f.id_fecha} className="crucero_salidas">
+            <p className="bg-primary fecha">
+              Desde el{" "}
+              {fechaInicio.toLocaleDateString("es-MX", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              hasta el{" "}
+              {fechaFin.toLocaleDateString("es-MX", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+            <div className="preciosList">
+              {precios
+                .filter((p) => p.id_fecha === f.id_fecha)
+                .map((p) => {
+                  const habitacion = habitaciones.find(
+                    (h) => h.id_habitacion === p.id_habitacion,
+                  );
+
+                  return (
+                    <div key={p.id_precio}>
+                      <p>{habitacion?.categoria}</p>
+                      <p>${p.precio}</p>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [itinerario, setItinerario] = useState<Itinerario[]>([]);
+  const [puertos, setPuertos] = useState<Puerto[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await itinerarioService.getByCrucero(idCrucero);
+        const dataPuertos = await puertoService.getAll();
 
-        if (!data) {
+        if (!data || !dataPuertos) {
           setError("Error al extraer la data");
         } else {
           setItinerario(data);
+          setPuertos(dataPuertos);
         }
       } catch (err) {
         setError("Error al obtener los datos");
@@ -197,7 +303,10 @@ const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
             className="text-center justify-center"
           >
             <TableCell>Día {i.dia}</TableCell>
-            <TableCell>{i.dia}</TableCell>
+            <TableCell>
+              {puertos.find((p) => p.id_puerto === i.id_puerto)?.nombre},{" "}
+              {puertos.find((p) => p.id_puerto === i.id_puerto)?.pais}
+            </TableCell>
             <TableCell>{i.descripcion}</TableCell>
             <TableCell className="text-center justify-center">
               {i.hora_llegada ? `${i.hora_llegada}:00` : `-:--`}

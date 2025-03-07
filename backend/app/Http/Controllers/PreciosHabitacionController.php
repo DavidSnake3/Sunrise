@@ -24,4 +24,9 @@ class PreciosHabitacionController extends Controller
 
         return response()->json($precio);
     }
+    public function index()
+    {
+        $habitaciones = PreciosHabitacion::all();
+        return response()->json($habitaciones);
+    }
 }

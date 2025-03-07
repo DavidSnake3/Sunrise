@@ -23,4 +23,10 @@ export const puertoService = {
 
     return handleResponse<Puerto[]>(response);
   },
+
+  async getAll(): Promise<Puerto[]> {
+    const response = await fetch(`${API_URL}/puertos`);
+
+    return handleResponse<Puerto[]>(response);
+  },
 };
