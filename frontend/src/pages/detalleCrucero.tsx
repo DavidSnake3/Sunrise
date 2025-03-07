@@ -12,6 +12,7 @@ import {
 import { cruceroService, Crucero } from "../api/cruceros";
 import { barcoService, Barco } from "../api/barcos";
 import { itinerarioService, Itinerario } from "../api/itinerario";
+import { puertoService, Puerto } from "../api/puertos";
 
 import DefaultLayout from "@/layouts/default";
 import LoadingScreen from "@/components/loading";
@@ -34,6 +35,7 @@ export default function DocsPage() {
         const dataBarco = (await barcoService.getAll()).find(
           (b) => dataCrucero?.id_barco === b.id_barco,
         );
+       
 
         if (!dataCrucero || !dataBarco) {
           setError("Error al extraer la data");
@@ -145,16 +147,19 @@ const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [itinerario, setItinerario] = useState<Itinerario[]>([]);
+  const [puertos, setPuertos] = useState<Puerto[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await itinerarioService.getByCrucero(idCrucero);
+        const dataPuertos = await puertoService.getAll();
 
-        if (!data) {
+        if (!data || !dataPuertos) {
           setError("Error al extraer la data");
         } else {
           setItinerario(data);
+          setPuertos(dataPuertos);
         }
       } catch (err) {
         setError("Error al obtener los datos");
@@ -182,7 +187,7 @@ const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
         {itinerario.map((i) => (
           <TableRow key={i.id_itinerario} className="text-center justify-center">
             <TableCell >Día {i.dia}</TableCell>
-            <TableCell >{i.dia}</TableCell>
+            <TableCell >{puertos.find((p) => p.id_puerto === i.id_puerto)?.nombre}, {puertos.find((p) => p.id_puerto === i.id_puerto)?.pais}</TableCell>
             <TableCell>{i.descripcion}</TableCell>
             <TableCell className="text-center justify-center">{i.hora_llegada ? `${i.hora_llegada}:00` : `-:--`}</TableCell>
             <TableCell className="text-center justify-center">{i.hora_salida ? `${i.hora_salida}:00` : `-:--`}</TableCell>

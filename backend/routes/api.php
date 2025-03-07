@@ -45,6 +45,7 @@ Route::get('/barcos', [BarcoController::class, 'index']);
 Route::get('/reservas', [ReservaController::class, 'index']);
 Route::get('/fechas-crucero', [FechasCruceroController::class, 'index']);
 Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/puertos', [PuertoController::class, 'index']);
 
 
 Route::get('/destinos/{destino}/puertos', [DestinoController::class, 'getPuertos']);

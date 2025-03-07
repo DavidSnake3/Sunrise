@@ -15,4 +15,11 @@ class PuertoController extends Controller
 
         return response()->json($puertos);
     }
+
+    public function index()
+    {
+        $puerto = Puerto::all();
+        return response()->json($puerto);
+    }
+    
 }

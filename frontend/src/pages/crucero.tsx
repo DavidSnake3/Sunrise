@@ -255,7 +255,7 @@ export default function DocsPage() {
                         Navigate(`/cruceros/detalles/${crucero.id_crucero}`)
                       }
                     >
-                      Detalles
+                      Ver Detalles
                     </Button>
                   </div>
                 </div>
