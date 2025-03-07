@@ -6,6 +6,8 @@ import { DataTable } from "../../components/common/DataTable";
 import { useAuth } from "../../contexts/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
 
+import LoadingScreen from "@/components/loading";
+
 const BarcosPage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -87,7 +89,7 @@ const BarcosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
-  if (loading) return <div className="p-4">Cargando barcos...</div>;
+  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Barcos')} </div>;
 
   return (
     <div className="divAdmin">

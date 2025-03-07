@@ -11,6 +11,7 @@ import { barcoService, Barco } from "../api/barcos";
 import { Destino, destinoService } from "../api/destinos";
 
 import DefaultLayout from "@/layouts/default";
+import LoadingScreen from "@/components/loading";
 
 import "../styles/crucero.css";
 import {
@@ -104,7 +105,7 @@ export default function DocsPage() {
     setDiasSeleccionados(""); // Restablecer los días seleccionados
   };
 
-  if (loading) return <p>Cargando cruceros...</p>;
+  if (loading) return <div className="h-[calc(100vh-60px)] w-[100%]"> {LoadingScreen('Cruceros')} </div>;
   if (error) return <p>Error: {error}</p>;
 
   return (

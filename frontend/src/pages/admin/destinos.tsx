@@ -5,6 +5,8 @@ import { destinoService, Destino } from "../../api/destinos";
 import { useAuth } from "../../contexts/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
 
+import LoadingScreen from "@/components/loading";
+
 import { DataTable } from "@/components/common/DataTable";
 
 const DestinosPage = () => {
@@ -64,7 +66,7 @@ const DestinosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
-  if (loading) return <div className="p-4">Cargando destinos...</div>;
+  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Destinos')} </div>;
 
   return (
     <div className="divAdmin">

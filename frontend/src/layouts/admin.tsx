@@ -57,8 +57,6 @@ export default function DefaultLayout() {
     }
   };
 
-  console.log(useLocation().pathname);
-
   return (
     <div className="h-[calc(100vh-60px)] flex flex-col">
       <main className="flex flex-grow overflow-hidden">
@@ -79,6 +77,7 @@ export default function DefaultLayout() {
                   as={Link}
                   className={`justify-start btn ${select === index ? "select" : ""}`}
                   to={item.href}
+                  onPress={() => setSelct(index)}
                 >
                   {getIcon(item.label)} {item.label}
                 </Button>

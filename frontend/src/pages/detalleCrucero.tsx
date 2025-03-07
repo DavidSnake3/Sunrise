@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@heroui/react";
 
 import { cruceroService, Crucero } from "../api/cruceros";
 import { barcoService, Barco } from "../api/barcos";
+import { itinerarioService, Itinerario } from "../api/itinerario";
 
 import DefaultLayout from "@/layouts/default";
+import LoadingScreen from "@/components/loading";
 import "../styles/detallesCrucero.css";
 
 export default function DocsPage() {
@@ -41,9 +51,8 @@ export default function DocsPage() {
     fetchData();
   }, [id]);
 
-  console.log(index);
 
-  if (loading) return <p>Cargando crucero...</p>;
+  if (loading) return <div className="h-[calc(100vh-60px)] w-[100%]"> {LoadingScreen('Crucero')} </div>;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -104,45 +113,94 @@ export default function DocsPage() {
               Habitaciones
             </button>
           </nav>
-          <main className="">
-            {(() => {
-              switch (index) {
-                case 1:
-                  return indexSalida();
-                case 2:
-                  return indexItinerario();
-                case 3:
-                  return indexIncluido();
-                case 4:
-                  return indexBarcos();
-                case 5:
-                  return indexHabitaciones();
-                default:
-                  return <p>Selecciona una opción</p>;
-              }
-            })()}
-          </main>
+          <main className="crucero_main">
+  {(() => {
+    switch (index) {
+      case 1:
+        return <IndexSalida idCrucero={Number(id)} />;
+      case 2:
+        return <IndexItinerario idCrucero={Number(id)} />;
+      case 3:
+        return <IndexIncluido idCrucero={Number(id)} />;
+      case 4:
+        return <IndexBarcos barco={barco} />;
+      case 5:
+        return <IndexHabitaciones barco={barco} />;
+      default:
+        return <p>Selecciona una opción</p>;
+    }
+  })()}
+</main>
         </div>
       </section>
     </DefaultLayout>
   );
 }
 
-const indexSalida = () => {
+const IndexSalida = ({ idCrucero }: { idCrucero: number }) => {
   return <p>Fechas Salida</p>;
 };
 
-const indexItinerario = () => {
-  return <p>Itinerario </p>;
+const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [itinerario, setItinerario] = useState<Itinerario[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await itinerarioService.getByCrucero(idCrucero);
+
+        if (!data) {
+          setError("Error al extraer la data");
+        } else {
+          setItinerario(data);
+        }
+      } catch (err) {
+        setError("Error al obtener los datos");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idCrucero]);
+
+  if (loading) return <div className="flew-grow h-80"> {LoadingScreen('Itinerario')} </div>;
+  if (error) return <p>Error: {error}.</p>;
+
+  return (
+    <Table aria-label="Itinerario del crucero">
+      <TableHeader>
+        <TableColumn>Día</TableColumn>
+        <TableColumn>Puerto</TableColumn>
+        <TableColumn>Descripción</TableColumn>
+        <TableColumn className="text-center justify-center">Hora Llegada</TableColumn>
+        <TableColumn className="text-center justify-center">Hora Salida</TableColumn>
+      </TableHeader>
+      <TableBody>
+        {itinerario.map((i) => (
+          <TableRow key={i.id_itinerario} className="text-center justify-center">
+            <TableCell >Día {i.dia}</TableCell>
+            <TableCell >{i.dia}</TableCell>
+            <TableCell>{i.descripcion}</TableCell>
+            <TableCell className="text-center justify-center">{i.hora_llegada ? `${i.hora_llegada}:00` : `-:--`}</TableCell>
+            <TableCell className="text-center justify-center">{i.hora_salida ? `${i.hora_salida}:00` : `-:--`}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
 };
 
-const indexIncluido = () => {
+const IndexIncluido = ({ idCrucero }: { idCrucero: number }) => {
   return <p>Paquetes incluidos</p>;
 };
 
-const indexBarcos = () => {
+const IndexBarcos = ({ barco }: { barco: Barco | null }) => {
   return <p>Info del Barco</p>;
 };
-const indexHabitaciones = () => {
+
+const IndexHabitaciones = ({ barco }: { barco: Barco | null }) => {
   return <p>Info de las Habitaciones</p>;
 };

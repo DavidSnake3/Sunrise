@@ -10,6 +10,8 @@ import { useAuth } from "../../contexts/AuthContext";
 
 import { DataTable } from "@/components/common/DataTable";
 
+import LoadingScreen from "@/components/loading";
+
 const PreciosHabitacionPage = () => {
   const { id_fecha } = useParams();
   const navigate = useNavigate();
@@ -78,6 +80,8 @@ const PreciosHabitacionPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
+
+  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Precios')} </div>
 
   return (
     <div className="divAdmin">

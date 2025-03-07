@@ -16,6 +16,7 @@ import { DataTable } from "../../components/common/DataTable";
 import { useAuth } from "../../contexts/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
 import { getDetalleReserva, DetalleReserva } from "../../api/detalleReserva";
+import LoadingScreen from "@/components/loading";
 
 const ReservasPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -118,7 +119,7 @@ const ReservasPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
-  if (loading) return <div className="p-4">Cargando reservas...</div>;
+  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Reservas')} </div>;
 
   return (
     <div className="divAdmin">

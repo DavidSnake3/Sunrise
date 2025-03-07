@@ -6,12 +6,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Itinerario, itinerarioService } from "@/api/itinerario";
 import useFetchData from "@/hooks/useFetchData";
 
+import LoadingScreen from "@/components/loading";
+
 const ItinerariosPage = () => {
   const { id_crucero } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data, loading, error } = useFetchData<Itinerario[]>(() =>
-    itinerarioService.getItinerarios(Number(id_crucero)),
+    itinerarioService.getByCrucero(Number(id_crucero)),
   );
 
   const columns = [
@@ -44,6 +46,7 @@ const ItinerariosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
+  if(loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Itinerario')} </div>;
 
   return (
     <div className="divAdmin">

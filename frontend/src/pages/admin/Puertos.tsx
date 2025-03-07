@@ -12,6 +12,8 @@ import { destinoService } from "../../api/destinos";
 import { Puerto } from "../../api/puertos";
 import { useAuth } from "../../contexts/AuthContext";
 
+import LoadingScreen from "@/components/loading";
+
 import { DataTable } from "@/components/common/DataTable";
 
 const PuertosPage = () => {
@@ -83,6 +85,7 @@ const PuertosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
+  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Puertos')} </div>
 
   return (
     <div className="divAdmin">

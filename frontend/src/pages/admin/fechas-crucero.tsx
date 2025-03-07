@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { FechaCrucero, fechaCruceroService } from "@/api/fechaCrucero";
 import useFetchData from "@/hooks/useFetchData";
 
+import LoadingScreen from "@/components/loading";
+
 const FechasCruceroPage = () => {
   const { id_crucero } = useParams();
   const navigate = useNavigate();
@@ -59,6 +61,7 @@ const FechasCruceroPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
+  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Fechas')} </div>
 
   return (
     <div className="divAdmin">

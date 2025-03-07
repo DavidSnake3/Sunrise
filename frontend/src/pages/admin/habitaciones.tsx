@@ -20,6 +20,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { DataTable } from "@/components/common/DataTable";
 
+import LoadingScreen from "@/components/loading";
+
 const HabitacionesPage = () => {
   const { id_barco } = useParams();
   const navigate = useNavigate();
@@ -105,7 +107,7 @@ const HabitacionesPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
-  if (loading) return <div className="p-4">Cargando habitaciones...</div>;
+  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Habitaciones')} </div>;
 
   return (
     <div className="divAdmin">
