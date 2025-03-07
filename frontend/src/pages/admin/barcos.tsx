@@ -71,9 +71,11 @@ const BarcosPage = () => {
               Eliminar
             </Button>
             <Button
-              color="secondary"
+              color="warning"
               size="sm"
-              onClick={() => navigate(`/admin/barcos/habitaciones/${barco.id_barco}`)}
+              onClick={() =>
+                navigate(`/admin/barcos/habitaciones/${barco.id_barco}`)
+              }
             >
               Habitaciones
             </Button>
@@ -89,7 +91,13 @@ const BarcosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
-  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Barcos')} </div>;
+  if (loading)
+    return (
+      <div className="flew-grow h-[calc(100vh-108px)] w-full">
+        {" "}
+        {LoadingScreen("Barcos")}{" "}
+      </div>
+    );
 
   return (
     <div className="divAdmin">
@@ -111,10 +119,10 @@ const BarcosPage = () => {
           "año_construccion",
           "actions",
         ]}
+        nombre="Gestion de Barcos"
         renderCell={renderCell}
         rowKey="id_barco"
         searchPlaceholder="Buscar barco..."
-        nombre="Gestion de Barcos"
       />
     </div>
   );

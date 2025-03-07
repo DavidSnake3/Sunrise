@@ -24,4 +24,9 @@ class Puerto extends Model
     {
         return $this->belongsTo(Destino::class, 'id_destino', 'id_destino');
     }
+
+    public function itinerarios()
+    {
+        return $this->hasMany(Itinerario::class, 'id_puerto');
+    }
 }

@@ -19,5 +19,5 @@ export const itinerarioService = {
     const response = await fetch(`${API_URL}/itinerarios/${id_crucero}`);
 
     return handleResponse(response);
-  }
+  },
 };

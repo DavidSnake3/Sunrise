@@ -1,5 +1,3 @@
-// src/api/reservas.ts
-
 export interface Reserva {
   id_reserva: number;
   id_usuario: number;
@@ -11,7 +9,6 @@ export interface Reserva {
 
 const API_URL = "http://localhost:8000/api";
 
-// src/api/reservas.ts
 export const reservaService = {
   async getAll(): Promise<Reserva[]> {
     const token = localStorage.getItem("authToken");

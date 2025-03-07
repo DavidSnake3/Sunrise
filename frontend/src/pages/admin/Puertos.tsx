@@ -85,7 +85,13 @@ const PuertosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
-  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Puertos')} </div>
+  if (loading)
+    return (
+      <div className="flew-grow h-[calc(100vh-108px)] w-full">
+        {" "}
+        {LoadingScreen("Puertos")}{" "}
+      </div>
+    );
 
   return (
     <div className="divAdmin">
@@ -94,16 +100,16 @@ const PuertosPage = () => {
           ← Volver a Destinos
         </Button>
       </div>
-          <DataTable<Puerto>
-            columns={columns}
-            data={currentPuertos}
-            headerClassName="bg-gray-100"
-            initialVisibleColumns={["nombre", "foto", "pais", "actions"]}
-            renderCell={renderCell}
-            rowClassName="hover:bg-gray-50"
-            rowKey="id_puerto"
-            searchPlaceholder="Buscar puertos..."
-          />
+      <DataTable<Puerto>
+        columns={columns}
+        data={currentPuertos}
+        headerClassName="bg-gray-100"
+        initialVisibleColumns={["nombre", "foto", "pais", "actions"]}
+        renderCell={renderCell}
+        rowClassName="hover:bg-gray-50"
+        rowKey="id_puerto"
+        searchPlaceholder="Buscar puertos..."
+      />
     </div>
   );
 };

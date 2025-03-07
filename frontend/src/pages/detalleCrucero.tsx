@@ -51,8 +51,13 @@ export default function DocsPage() {
     fetchData();
   }, [id]);
 
-
-  if (loading) return <div className="h-[calc(100vh-60px)] w-[100%]"> {LoadingScreen('Crucero')} </div>;
+  if (loading)
+    return (
+      <div className="h-[calc(100vh-60px)] w-[100%]">
+        {" "}
+        {LoadingScreen("Crucero")}{" "}
+      </div>
+    );
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -114,23 +119,23 @@ export default function DocsPage() {
             </button>
           </nav>
           <main className="crucero_main">
-  {(() => {
-    switch (index) {
-      case 1:
-        return <IndexSalida idCrucero={Number(id)} />;
-      case 2:
-        return <IndexItinerario idCrucero={Number(id)} />;
-      case 3:
-        return <IndexIncluido idCrucero={Number(id)} />;
-      case 4:
-        return <IndexBarcos barco={barco} />;
-      case 5:
-        return <IndexHabitaciones barco={barco} />;
-      default:
-        return <p>Selecciona una opción</p>;
-    }
-  })()}
-</main>
+            {(() => {
+              switch (index) {
+                case 1:
+                  return <IndexSalida idCrucero={Number(id)} />;
+                case 2:
+                  return <IndexItinerario idCrucero={Number(id)} />;
+                case 3:
+                  return <IndexIncluido idCrucero={Number(id)} />;
+                case 4:
+                  return <IndexBarcos barco={barco} />;
+                case 5:
+                  return <IndexHabitaciones barco={barco} />;
+                default:
+                  return <p>Selecciona una opción</p>;
+              }
+            })()}
+          </main>
         </div>
       </section>
     </DefaultLayout>
@@ -166,7 +171,10 @@ const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
     fetchData();
   }, [idCrucero]);
 
-  if (loading) return <div className="flew-grow h-80"> {LoadingScreen('Itinerario')} </div>;
+  if (loading)
+    return (
+      <div className="flew-grow h-80"> {LoadingScreen("Itinerario")} </div>
+    );
   if (error) return <p>Error: {error}.</p>;
 
   return (
@@ -175,17 +183,28 @@ const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
         <TableColumn>Día</TableColumn>
         <TableColumn>Puerto</TableColumn>
         <TableColumn>Descripción</TableColumn>
-        <TableColumn className="text-center justify-center">Hora Llegada</TableColumn>
-        <TableColumn className="text-center justify-center">Hora Salida</TableColumn>
+        <TableColumn className="text-center justify-center">
+          Hora Llegada
+        </TableColumn>
+        <TableColumn className="text-center justify-center">
+          Hora Salida
+        </TableColumn>
       </TableHeader>
       <TableBody>
         {itinerario.map((i) => (
-          <TableRow key={i.id_itinerario} className="text-center justify-center">
-            <TableCell >Día {i.dia}</TableCell>
-            <TableCell >{i.dia}</TableCell>
+          <TableRow
+            key={i.id_itinerario}
+            className="text-center justify-center"
+          >
+            <TableCell>Día {i.dia}</TableCell>
+            <TableCell>{i.dia}</TableCell>
             <TableCell>{i.descripcion}</TableCell>
-            <TableCell className="text-center justify-center">{i.hora_llegada ? `${i.hora_llegada}:00` : `-:--`}</TableCell>
-            <TableCell className="text-center justify-center">{i.hora_salida ? `${i.hora_salida}:00` : `-:--`}</TableCell>
+            <TableCell className="text-center justify-center">
+              {i.hora_llegada ? `${i.hora_llegada}:00` : `-:--`}
+            </TableCell>
+            <TableCell className="text-center justify-center">
+              {i.hora_salida ? `${i.hora_salida}:00` : `-:--`}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

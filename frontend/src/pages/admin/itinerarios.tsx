@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Skeleton } from "@heroui/react";
+import { Button } from "@heroui/react";
 
 import { DataTable } from "@/components/common/DataTable";
 import { useAuth } from "@/contexts/AuthContext";
@@ -46,7 +46,13 @@ const ItinerariosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
-  if(loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Itinerario')} </div>;
+  if (loading)
+    return (
+      <div className="flew-grow h-[calc(100vh-108px)] w-full">
+        {" "}
+        {LoadingScreen("Itinerario")}{" "}
+      </div>
+    );
 
   return (
     <div className="divAdmin">
