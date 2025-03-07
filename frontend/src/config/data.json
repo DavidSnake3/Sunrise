@@ -1,0 +1,740 @@
+{
+  "Destinos": [
+    {
+      "id_destino": 1,
+      "nombre": "América del Norte",
+      "foto": "https://ejemplo.com/america_norte.jpg"
+    },
+    {
+      "id_destino": 2,
+      "nombre": "América del Sur",
+      "foto": "https://ejemplo.com/america_sur.jpg"
+    },
+    {
+      "id_destino": 3,
+      "nombre": "Caribe",
+      "foto": "https://ejemplo.com/caribe.jpg"
+    }
+  ],
+  "Puertos": [
+    {
+      "id_puerto": 1,
+      "id_destino": 1,
+      "nombre": "Orlando (Puerto Cañaveral)",
+      "pais": "Estados Unidos",
+      "foto": "https://ejemplo.com/orlando.jpg"
+    },
+    {
+      "id_puerto": 2,
+      "id_destino": 1,
+      "nombre": "Nassau",
+      "pais": "Bahamas",
+      "foto": "https://ejemplo.com/nassau.jpg"
+    },
+    {
+      "id_puerto": 3,
+      "id_destino": 1,
+      "nombre": "Ocean Cay MSC Marine Reserve",
+      "pais": "Bahamas",
+      "foto": "https://ejemplo.com/ocean_cay.jpg"
+    },
+    {
+      "id_puerto": 4,
+      "id_destino": 1,
+      "nombre": "Los Angeles",
+      "pais": "Estados Unidos",
+      "foto": "https://ejemplo.com/los_angeles.jpg"
+    },
+    {
+      "id_puerto": 5,
+      "id_destino": 1,
+      "nombre": "Cabo San Lucas",
+      "pais": "México",
+      "foto": "https://ejemplo.com/cabo_san_lucas.jpg"
+    },
+    {
+      "id_puerto": 6,
+      "id_destino": 1,
+      "nombre": "Mazatlan",
+      "pais": "México",
+      "foto": "https://ejemplo.com/mazatlan.jpg"
+    },
+    {
+      "id_puerto": 7,
+      "id_destino": 1,
+      "nombre": "Puerto Vallarta",
+      "pais": "México",
+      "foto": "https://ejemplo.com/puerto_vallarta.jpg"
+    },
+    {
+      "id_puerto": 8,
+      "id_destino": 1,
+      "nombre": "Catalina Island",
+      "pais": "Estados Unidos",
+      "foto": "https://ejemplo.com/catalina_island.jpg"
+    },
+    {
+      "id_puerto": 9,
+      "id_destino": 1,
+      "nombre": "Ensenada",
+      "pais": "México",
+      "foto": "https://ejemplo.com/ensenada.jpg"
+    },
+    {
+      "id_puerto": 10,
+      "id_destino": 1,
+      "nombre": "Victoria",
+      "pais": "Canadá",
+      "foto": "https://ejemplo.com/victoria.jpg"
+    },
+    {
+      "id_puerto": 11,
+      "id_destino": 1,
+      "nombre": "Vancouver",
+      "pais": "Canadá",
+      "foto": "https://ejemplo.com/vancouver.jpg"
+    },
+    {
+      "id_puerto": 12,
+      "id_destino": 2,
+      "nombre": "Buenos Aires",
+      "pais": "Argentina",
+      "foto": "https://ejemplo.com/buenos_aires.jpg"
+    },
+    {
+      "id_puerto": 13,
+      "id_destino": 2,
+      "nombre": "Montevideo",
+      "pais": "Uruguay",
+      "foto": "https://ejemplo.com/montevideo.jpg"
+    },
+    {
+      "id_puerto": 14,
+      "id_destino": 2,
+      "nombre": "Puerto Madryn",
+      "pais": "Argentina",
+      "foto": "https://ejemplo.com/puerto_madryn.jpg"
+    },
+    {
+      "id_puerto": 15,
+      "id_destino": 2,
+      "nombre": "Port Stanley",
+      "pais": "Islas Malvinas",
+      "foto": "https://ejemplo.com/port_stanley.jpg"
+    },
+    {
+      "id_puerto": 16,
+      "id_destino": 2,
+      "nombre": "Cape Horn (navegación)",
+      "pais": "Chile",
+      "foto": "https://ejemplo.com/cape_horn.jpg"
+    },
+    {
+      "id_puerto": 17,
+      "id_destino": 2,
+      "nombre": "Ushuaia",
+      "pais": "Argentina",
+      "foto": "https://ejemplo.com/ushuaia.jpg"
+    },
+    {
+      "id_puerto": 18,
+      "id_destino": 2,
+      "nombre": "Punta Arenas",
+      "pais": "Chile",
+      "foto": "https://ejemplo.com/punta_arenas.jpg"
+    },
+    {
+      "id_puerto": 19,
+      "id_destino": 2,
+      "nombre": "Amalia Glaciar (navegación)",
+      "pais": "Chile",
+      "foto": "https://ejemplo.com/amalia_glaciar.jpg"
+    },
+    {
+      "id_puerto": 20,
+      "id_destino": 2,
+      "nombre": "Puerto Montt",
+      "pais": "Chile",
+      "foto": "https://ejemplo.com/puerto_montt.jpg"
+    },
+    {
+      "id_puerto": 21,
+      "id_destino": 2,
+      "nombre": "San Antonio",
+      "pais": "Chile",
+      "foto": "https://ejemplo.com/san_antonio.jpg"
+    },
+    {
+      "id_puerto": 22,
+      "id_destino": 2,
+      "nombre": "Roca Leon Dormido",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/roca_leon.jpg"
+    },
+    {
+      "id_puerto": 23,
+      "id_destino": 2,
+      "nombre": "San Cristóbal",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/san_cristobal.jpg"
+    },
+    {
+      "id_puerto": 24,
+      "id_destino": 2,
+      "nombre": "Bartolome",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/bartolome.jpg"
+    },
+    {
+      "id_puerto": 25,
+      "id_destino": 2,
+      "nombre": "Punta Espinoza, Fernandina",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/punta_espinoza.jpg"
+    },
+    {
+      "id_puerto": 26,
+      "id_destino": 2,
+      "nombre": "Punta Vicente Roca, Isabela",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/punta_vicente.jpg"
+    },
+    {
+      "id_puerto": 27,
+      "id_destino": 2,
+      "nombre": "Bahia Elizabeth, Isabela",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/bahia_elizabeth.jpg"
+    },
+    {
+      "id_puerto": 28,
+      "id_destino": 2,
+      "nombre": "Caleta Tagus",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/caleta_tagus.jpg"
+    },
+    {
+      "id_puerto": 29,
+      "id_destino": 2,
+      "nombre": "Punta Cormorant, Floreana",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/punta_cormorant.jpg"
+    },
+    {
+      "id_puerto": 30,
+      "id_destino": 2,
+      "nombre": "Islote Campéon, Floreana",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/islote_campeon.jpg"
+    },
+    {
+      "id_puerto": 31,
+      "id_destino": 2,
+      "nombre": "Bahia Post Office (Floreana Island)",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/bahia_post_office.jpg"
+    },
+    {
+      "id_puerto": 32,
+      "id_destino": 2,
+      "nombre": "Estacion Darwin and Puerto Ayora, Santa Cruz",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/estacion_darwin.jpg"
+    },
+    {
+      "id_puerto": 33,
+      "id_destino": 2,
+      "nombre": "Los Gemelos, Santa Cruz",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/los_gemelos.jpg"
+    },
+    {
+      "id_puerto": 34,
+      "id_destino": 2,
+      "nombre": "Cerro Dragon, Santa Cruz",
+      "pais": "Ecuador",
+      "foto": "https://ejemplo.com/cerro_dragon.jpg"
+    },
+    {
+      "id_puerto": 35,
+      "id_destino": 2,
+      "nombre": "São Paulo (Puerto de Santos)",
+      "pais": "Brasil",
+      "foto": "https://ejemplo.com/sao_paulo.jpg"
+    },
+    {
+      "id_puerto": 36,
+      "id_destino": 2,
+      "nombre": "Camboriu",
+      "pais": "Brasil",
+      "foto": "https://ejemplo.com/camboriu.jpg"
+    },
+    {
+      "id_puerto": 37,
+      "id_destino": 2,
+      "nombre": "Porto Belo",
+      "pais": "Brasil",
+      "foto": "https://ejemplo.com/porto_belo.jpg"
+    },
+    {
+      "id_puerto": 38,
+      "id_destino": 2,
+      "nombre": "Abraao (Ilha Grande Island)",
+      "pais": "Brasil",
+      "foto": "https://ejemplo.com/abraao.jpg"
+    },
+    {
+      "id_puerto": 39,
+      "id_destino": 2,
+      "nombre": "Buzios",
+      "pais": "Brasil",
+      "foto": "https://ejemplo.com/buzios.jpg"
+    },
+    {
+      "id_puerto": 40,
+      "id_destino": 2,
+      "nombre": "Angra dos Reis",
+      "pais": "Brasil",
+      "foto": "https://ejemplo.com/angra_dos_reis.jpg"
+    },
+    {
+      "id_puerto": 41,
+      "id_destino": 3,
+      "nombre": "Miami",
+      "pais": "Estados Unidos",
+      "foto": "https://ejemplo.com/miami.jpg"
+    },
+    {
+      "id_puerto": 42,
+      "id_destino": 3,
+      "nombre": "Harvest Cay (Isla privada)",
+      "pais": "Belice",
+      "foto": "https://ejemplo.com/harvest_cay.jpg"
+    },
+    {
+      "id_puerto": 43,
+      "id_destino": 3,
+      "nombre": "Isla de Roatán",
+      "pais": "Honduras",
+      "foto": "https://ejemplo.com/roatan.jpg"
+    },
+    {
+      "id_puerto": 44,
+      "id_destino": 3,
+      "nombre": "Costa Maya Port (Majahual)",
+      "pais": "México",
+      "foto": "https://ejemplo.com/costa_maya.jpg"
+    },
+    {
+      "id_puerto": 45,
+      "id_destino": 3,
+      "nombre": "Cozumel",
+      "pais": "México",
+      "foto": "https://ejemplo.com/cozumel.jpg"
+    },
+    {
+      "id_puerto": 46,
+      "id_destino": 3,
+      "nombre": "Puerto Plata",
+      "pais": "República Dominicana",
+      "foto": "https://ejemplo.com/puerto_plata.jpg"
+    },
+    {
+      "id_puerto": 47,
+      "id_destino": 3,
+      "nombre": "Charlotte Amalie, St Thomas",
+      "pais": "Islas Vírgenes de EE. UU.",
+      "foto": "https://ejemplo.com/charlotte_amalie.jpg"
+    },
+    {
+      "id_puerto": 48,
+      "id_destino": 3,
+      "nombre": "Tortola",
+      "pais": "Islas Vírgenes Británicas",
+      "foto": "https://ejemplo.com/tortola.jpg"
+    },
+    {
+      "id_puerto": 49,
+      "id_destino": 3,
+      "nombre": "Great Stirrup Cay (private beach)",
+      "pais": "Bahamas",
+      "foto": "https://ejemplo.com/great_stirrup_cay.jpg"
+    },
+    {
+      "id_puerto": 50,
+      "id_destino": 3,
+      "nombre": "Basseterre, St Kitts",
+      "pais": "San Cristóbal y Nieves",
+      "foto": "https://ejemplo.com/basseterre.jpg"
+    },
+    {
+      "id_puerto": 51,
+      "id_destino": 3,
+      "nombre": "Cococay",
+      "pais": "Bahamas",
+      "foto": "https://ejemplo.com/cococay.jpg"
+    },
+    {
+      "id_puerto": 52,
+      "id_destino": 3,
+      "nombre": "Ocean Cay MSC Marine Reserve",
+      "pais": "Bahamas",
+      "foto": "https://ejemplo.com/ocean_cay_msc.jpg"
+    },
+    {
+      "id_puerto": 53,
+      "id_destino": 3,
+      "nombre": "San Juan",
+      "pais": "Puerto Rico",
+      "foto": "https://ejemplo.com/san_juan.jpg"
+    }
+  ],
+  "Barcos": [
+    {
+      "id_barco": 1,
+      "nombre": "Ocean Dream",
+      "capacidad_pasajeros": 2000,
+      "capacidad_tripulantes": 800,
+      "total_habitaciones": 1000,
+      "velocidad_maxima": 22.5,
+      "tonelaje": 150000.0,
+      "altura": 60.5,
+      "largo": 300.0,
+      "ancho": 40.0,
+      "año_construccion": 2010
+    },
+    {
+      "id_barco": 2,
+      "nombre": "Sea Voyager",
+      "capacidad_pasajeros": 1500,
+      "capacidad_tripulantes": 600,
+      "total_habitaciones": 750,
+      "velocidad_maxima": 21.0,
+      "tonelaje": 120000.0,
+      "altura": 55.0,
+      "largo": 280.0,
+      "ancho": 38.0,
+      "año_construccion": 2012
+    },
+    {
+      "id_barco": 3,
+      "nombre": "Marine Explorer",
+      "capacidad_pasajeros": 1800,
+      "capacidad_tripulantes": 700,
+      "total_habitaciones": 900,
+      "velocidad_maxima": 20.5,
+      "tonelaje": 130000.0,
+      "altura": 58.0,
+      "largo": 290.0,
+      "ancho": 39.0,
+      "año_construccion": 2011
+    },
+    {
+      "id_barco": 4,
+      "nombre": "Harbor Princess",
+      "capacidad_pasajeros": 2200,
+      "capacidad_tripulantes": 900,
+      "total_habitaciones": 1100,
+      "velocidad_maxima": 23.0,
+      "tonelaje": 160000.0,
+      "altura": 62.0,
+      "largo": 310.0,
+      "ancho": 42.0,
+      "año_construccion": 2009
+    },
+    {
+      "id_barco": 5,
+      "nombre": "Island Breeze",
+      "capacidad_pasajeros": 1700,
+      "capacidad_tripulantes": 650,
+      "total_habitaciones": 850,
+      "velocidad_maxima": 20.0,
+      "tonelaje": 110000.0,
+      "altura": 54.0,
+      "largo": 270.0,
+      "ancho": 37.0,
+      "año_construccion": 2013
+    }
+  ],
+  "Habitaciones": [
+    {
+      "id_habitacion": 1,
+      "id_barco": 1,
+      "categoria": "Interior",
+      "nombre": "Habitación 101",
+      "descripcion": "Habitación interior con todas las comodidades.",
+      "capacidad_min": 1,
+      "capacidad_max": 2,
+      "tamaño": 18.5,
+      "cantidad_Disponibles": 10
+    },
+    {
+      "id_habitacion": 2,
+      "id_barco": 1,
+      "categoria": "Vista al mar",
+      "nombre": "Habitación 102",
+      "descripcion": "Habitación con vista al mar y balcón.",
+      "capacidad_min": 2,
+      "capacidad_max": 4,
+      "tamaño": 25.0,
+      "cantidad_Disponibles": 8
+    },
+    {
+      "id_habitacion": 3,
+      "id_barco": 1,
+      "categoria": "Suite",
+      "nombre": "Suite 103",
+      "descripcion": "Suite de lujo con sala de estar y jacuzzi.",
+      "capacidad_min": 2,
+      "capacidad_max": 4,
+      "tamaño": 50.0,
+      "cantidad_Disponibles": 2
+    },
+    {
+      "id_habitacion": 4,
+      "id_barco": 2,
+      "categoria": "Interior",
+      "nombre": "Habitación 201",
+      "descripcion": "Habitación interior con todas las comodidades.",
+      "capacidad_min": 1,
+      "capacidad_max": 2,
+      "tamaño": 18.5,
+      "cantidad_Disponibles": 10
+    },
+    {
+      "id_habitacion": 5,
+      "id_barco": 2,
+      "categoria": "Vista al mar",
+      "nombre": "Habitación 202",
+      "descripcion": "Habitación con vista al mar y balcón.",
+      "capacidad_min": 2,
+      "capacidad_max": 4,
+      "tamaño": 25.0,
+      "cantidad_Disponibles": 8
+    }
+  ],
+  "Fotos_Barco": [
+    {
+      "Id_fotos_Barco": 1,
+      "Id_barco": 1,
+      "foto": "https://ejemplo.com/ocean_dream_1.jpg"
+    },
+    {
+      "Id_fotos_Barco": 2,
+      "Id_barco": 1,
+      "foto": "https://ejemplo.com/ocean_dream_2.jpg"
+    },
+    {
+      "Id_fotos_Barco": 3,
+      "Id_barco": 2,
+      "foto": "https://ejemplo.com/sea_voyager_1.jpg"
+    },
+    {
+      "Id_fotos_Barco": 4,
+      "Id_barco": 2,
+      "foto": "https://ejemplo.com/sea_voyager_2.jpg"
+    },
+    {
+      "Id_fotos_Barco": 5,
+      "Id_barco": 3,
+      "foto": "https://ejemplo.com/marine_explorer_1.jpg"
+    }
+  ],
+  "Cruceros": [
+    {
+      "id_crucero": 1,
+      "nombre": "Caribe Dream",
+      "foto": "https://ejemplo.com/caribe_dream.jpg",
+      "cantidad_dias": 7,
+      "id_barco": 1
+    },
+    {
+      "id_crucero": 2,
+      "nombre": "Mediterranean Escape",
+      "foto": "https://ejemplo.com/mediterranean_escape.jpg",
+      "cantidad_dias": 10,
+      "id_barco": 2
+    },
+    {
+      "id_crucero": 3,
+      "nombre": "Alaskan Adventure",
+      "foto": "https://ejemplo.com/alaskan_adventure.jpg",
+      "cantidad_dias": 14,
+      "id_barco": 3
+    },
+    {
+      "id_crucero": 4,
+      "nombre": "Baltic Discovery",
+      "foto": "https://ejemplo.com/baltic_discovery.jpg",
+      "cantidad_dias": 12,
+      "id_barco": 4
+    },
+    {
+      "id_crucero": 5,
+      "nombre": "Tropical Paradise",
+      "foto": "https://ejemplo.com/tropical_paradise.jpg",
+      "cantidad_dias": 8,
+      "id_barco": 5
+    }
+  ],
+  "Itinerarios": [
+    {
+      "id_itinerario": 1,
+      "id_crucero": 1,
+      "dia": 1,
+      "descripcion": "Día 1: Salida desde el puerto principal."
+    },
+    {
+      "id_itinerario": 2,
+      "id_crucero": 1,
+      "dia": 2,
+      "descripcion": "Día 2: Llegada a la primera parada."
+    },
+    {
+      "id_itinerario": 3,
+      "id_crucero": 2,
+      "dia": 1,
+      "descripcion": "Día 1: Salida desde el puerto principal."
+    },
+    {
+      "id_itinerario": 4,
+      "id_crucero": 2,
+      "dia": 2,
+      "descripcion": "Día 2: Llegada a la primera parada."
+    },
+    {
+      "id_itinerario": 5,
+      "id_crucero": 3,
+      "dia": 1,
+      "descripcion": "Día 1: Salida desde el puerto principal."
+    }
+  ],
+  "Fechas_Cruceros": [
+    {
+      "id_fecha": 1,
+      "id_crucero": 1,
+      "fecha_inicio": "2023-12-01",
+      "fecha_limite_pago": "2023-11-15"
+    },
+    {
+      "id_fecha": 2,
+      "id_crucero": 1,
+      "fecha_inicio": "2024-01-15",
+      "fecha_limite_pago": "2023-12-30"
+    },
+    {
+      "id_fecha": 3,
+      "id_crucero": 2,
+      "fecha_inicio": "2023-11-10",
+      "fecha_limite_pago": "2023-10-25"
+    },
+    {
+      "id_fecha": 4,
+      "id_crucero": 2,
+      "fecha_inicio": "2024-02-20",
+      "fecha_limite_pago": "2024-01-30"
+    },
+    {
+      "id_fecha": 5,
+      "id_crucero": 3,
+      "fecha_inicio": "2023-12-05",
+      "fecha_limite_pago": "2023-11-20"
+    }
+  ],
+  "Precios_Habitaciones": [
+    {
+      "id_precio": 1,
+      "id_fecha": 1,
+      "id_habitacion": 1,
+      "precio": 1500.0
+    },
+    {
+      "id_precio": 2,
+      "id_fecha": 1,
+      "id_habitacion": 2,
+      "precio": 2000.0
+    },
+    {
+      "id_precio": 3,
+      "id_fecha": 2,
+      "id_habitacion": 1,
+      "precio": 1600.0
+    },
+    {
+      "id_precio": 4,
+      "id_fecha": 2,
+      "id_habitacion": 2,
+      "precio": 2100.0
+    },
+    {
+      "id_precio": 5,
+      "id_fecha": 3,
+      "id_habitacion": 3,
+      "precio": 3000.0
+    }
+  ],
+  "Complementos": [
+    {
+      "id_complemento": 1,
+      "nombre": "Paquete de bebidas",
+      "descripcion": "Incluye bebidas ilimitadas durante todo el crucero.",
+      "precio": 150.0,
+      "aplicado_por": "huésped"
+    },
+    {
+      "id_complemento": 2,
+      "nombre": "Excursión premium",
+      "descripcion": "Excursión exclusiva con guía privado.",
+      "precio": 200.0,
+      "aplicado_por": "camarote"
+    },
+    {
+      "id_complemento": 3,
+      "nombre": "Wi-Fi ilimitado",
+      "descripcion": "Acceso a Wi-Fi de alta velocidad durante todo el crucero.",
+      "precio": 100.0,
+      "aplicado_por": "huésped"
+    },
+    {
+      "id_complemento": 4,
+      "nombre": "Spa completo",
+      "descripcion": "Acceso ilimitado al spa y tratamientos relajantes.",
+      "precio": 250.0,
+      "aplicado_por": "huésped"
+    },
+    {
+      "id_complemento": 5,
+      "nombre": "Cena gourmet",
+      "descripcion": "Cena en restaurante gourmet con menú degustación.",
+      "precio": 120.0,
+      "aplicado_por": "camarote"
+    }
+  ],
+  "Cruceros_Complementos": [
+    {
+      "id_crucero_complemento": 1,
+      "id_crucero": 1,
+      "id_complemento": 1
+    },
+    {
+      "id_crucero_complemento": 2,
+      "id_crucero": 1,
+      "id_complemento": 2
+    },
+    {
+      "id_crucero_complemento": 3,
+      "id_crucero": 2,
+      "id_complemento": 3
+    },
+    {
+      "id_crucero_complemento": 4,
+      "id_crucero": 2,
+      "id_complemento": 4
+    },
+    {
+      "id_crucero_complemento": 5,
+      "id_crucero": 3,
+      "id_complemento": 5
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+
+nav {
+  transition: all 0.5s ease;
+}
+
+.nav-logo {
+  max-width: 200px;
+  min-width: 150px;
+}
+
+.nav a,
+.nav .login {
+  transition: all 0.3s ease;
+  color: white;
+  background-color: transparent;
+}
+.nav .login, .nav-scroll .login {
+  margin: 0;
+  padding: 10px;
+}
+.nav .login:hover {
+  background-color: white;
+  color: #f05235;
+}
+
+.nav a.select {
+  color: #333333;
+}
+.nav a:hover {
+  color: #333333;
+}
+
+.nav-scroll a {
+  transition: all 0.3s ease;
+}
+.nav-scroll a.select {
+  color: #f05235;
+}
+.nav-scroll a:hover,
+.nav-scroll .login:hover {
+  color: #f05235;
+}
+
+.nav-scroll .login {
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.nav-scroll .user .icon {
+  background-color: #f05235;
+  span {
+    color: white;
+  }
+}
+.nav-scroll .user .text {
+color: #f05235;
+}
+.nav-scroll .user:hover {
+  .icon {
+    background-color: #c23b23;
+    span {
+      color: white;
+    }
+  };
+  .text {
+    color: #c23b23;
+  };
+}
+.nav .user:hover {
+  .icon {
+    background-color: #e6e6e6;
+    span {
+      color: #f05235;
+    }
+  };
+  .text {
+    color: #e6e6e6;
+  };
+}
+.nav-scroll .logOut, .nav .user .logOut {
+  color: #f31228;
+  }
