@@ -6,7 +6,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Spinner,
   Textarea,
 } from "@heroui/react";
@@ -133,10 +132,10 @@ const ReservasPage = () => {
           "estado",
           "actions",
         ]}
+        nombre="Gestion de Reservas"
         renderCell={renderCell}
         rowKey="id_reserva"
         searchPlaceholder="Buscar reserva..."
-        nombre="Gestion de Reservas"
       />
 
       {detalleModalOpen && (

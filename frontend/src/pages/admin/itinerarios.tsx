@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Skeleton } from "@heroui/react";
+import { Button } from "@heroui/react";
 
 import { DataTable } from "@/components/common/DataTable";
 import { useAuth } from "@/contexts/AuthContext";

@@ -56,24 +56,24 @@ const UsuariosPage = () => {
 
   return (
     <div className="divAdmin">
-    <DataTable<Usuario>
-      columns={columns}
-      data={usuarios || []}
-      initialVisibleColumns={[
-        "nombre_completo",
-        "email",
-        "genero",
-        "edad",
-        "fecha_nacimiento",
-        "nacionalidad",
-        "telefono",
-        "actions",
-      ]}
-      renderCell={renderCell}
-      rowKey="id_usuario"
-      searchPlaceholder="Buscar usuario..."
-      nombre="Gestion de Usuarios"
-    />
+      <DataTable<Usuario>
+        columns={columns}
+        data={usuarios || []}
+        initialVisibleColumns={[
+          "nombre_completo",
+          "email",
+          "genero",
+          "edad",
+          "fecha_nacimiento",
+          "nacionalidad",
+          "telefono",
+          "actions",
+        ]}
+        nombre="Gestion de Usuarios"
+        renderCell={renderCell}
+        rowKey="id_usuario"
+        searchPlaceholder="Buscar usuario..."
+      />
     </div>
   );
 };
