@@ -91,16 +91,16 @@ const PuertosPage = () => {
           ← Volver a Destinos
         </Button>
       </div>
-          <DataTable<Puerto>
-            columns={columns}
-            data={currentPuertos}
-            headerClassName="bg-gray-100"
-            initialVisibleColumns={["nombre", "foto", "pais", "actions"]}
-            renderCell={renderCell}
-            rowClassName="hover:bg-gray-50"
-            rowKey="id_puerto"
-            searchPlaceholder="Buscar puertos..."
-          />
+      <DataTable<Puerto>
+        columns={columns}
+        data={currentPuertos}
+        headerClassName="bg-gray-100"
+        initialVisibleColumns={["nombre", "foto", "pais", "actions"]}
+        renderCell={renderCell}
+        rowClassName="hover:bg-gray-50"
+        rowKey="id_puerto"
+        searchPlaceholder="Buscar puertos..."
+      />
     </div>
   );
 };

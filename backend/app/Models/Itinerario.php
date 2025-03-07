@@ -28,4 +28,11 @@ class Itinerario extends Model
     {
         return $this->hasMany(FechasCrucero::class, 'id_itinerario');
     }
+
+    public function puerto()
+    {
+        return $this->belongsTo(Puerto::class, 'id_puerto');
+    }
+
+    
 }

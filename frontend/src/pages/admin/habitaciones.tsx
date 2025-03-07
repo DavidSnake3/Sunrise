@@ -143,7 +143,7 @@ const HabitacionesPage = () => {
               <div className="text-danger text-center p-4">{detalleError}</div>
             )}
 
-            {detalles && !detalleLoading  && !detalleError && (
+            {detalles && !detalleLoading && !detalleError && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem
                   fullWidth

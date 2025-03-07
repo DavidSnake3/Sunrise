@@ -16,7 +16,6 @@ class FechasCrucero extends Model
         'fecha_limite_pago'
     ];
 
-    // Si tienes el modelo Crucero, define la relación.
     public function crucero()
     {
         return $this->belongsTo(Crucero::class, 'id_crucero');

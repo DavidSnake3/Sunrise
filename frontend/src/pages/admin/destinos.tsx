@@ -68,15 +68,15 @@ const DestinosPage = () => {
 
   return (
     <div className="divAdmin">
-    <DataTable<Destino>
-      columns={columns}
-      data={destinos || []}
-      initialVisibleColumns={["nombre", "foto", "actions"]}
-      renderCell={renderCell}
-      rowKey="id_destino"
-      searchPlaceholder="Buscar destino..."
-      nombre="Gestion de Destinos"
-    />
+      <DataTable<Destino>
+        columns={columns}
+        data={destinos || []}
+        initialVisibleColumns={["nombre", "foto", "actions"]}
+        nombre="Gestion de Destinos"
+        renderCell={renderCell}
+        rowKey="id_destino"
+        searchPlaceholder="Buscar destino..."
+      />
     </div>
   );
 };

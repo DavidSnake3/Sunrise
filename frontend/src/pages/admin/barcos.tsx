@@ -69,9 +69,11 @@ const BarcosPage = () => {
               Eliminar
             </Button>
             <Button
-              color="secondary"
+              color="warning"
               size="sm"
-              onClick={() => navigate(`/admin/barcos/habitaciones/${barco.id_barco}`)}
+              onClick={() =>
+                navigate(`/admin/barcos/habitaciones/${barco.id_barco}`)
+              }
             >
               Habitaciones
             </Button>
@@ -109,10 +111,10 @@ const BarcosPage = () => {
           "año_construccion",
           "actions",
         ]}
+        nombre="Gestion de Barcos"
         renderCell={renderCell}
         rowKey="id_barco"
         searchPlaceholder="Buscar barco..."
-        nombre="Gestion de Barcos"
       />
     </div>
   );

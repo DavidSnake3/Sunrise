@@ -1,5 +1,5 @@
 import axios from "axios";
-import datos from "../config/data.json"
+import datos from "../config/data.json";
 
 // Función asíncrona para obtener los países de América
 export const paises = async () => {
@@ -14,8 +14,8 @@ export const paises = async () => {
 
 export const GetData = async () => {
   try {
-    const response = await datos; 
-    return response; 
+    const response = await datos;
+    return response;
   } catch (error) {
     console.error("Error fetching cruceros data:", error);
     throw error;

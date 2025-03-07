@@ -1,6 +1,11 @@
 // src/components/Navbar.tsx
 import { useState, useEffect } from "react";
-import { useLocation, Link as RouterLink, Link, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  Link as RouterLink,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 import Logo2 from "/logo/Logo 6.png";
 

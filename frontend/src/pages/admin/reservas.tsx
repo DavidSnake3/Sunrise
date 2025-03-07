@@ -6,8 +6,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  Badge,
   Spinner,
-  Textarea,
 } from "@heroui/react";
 
 import { reservaService, Reserva } from "../../api/reservas";
@@ -24,29 +24,21 @@ const ReservasPage = () => {
     error,
   } = useFetchData<Reserva[]>(reservaService.getAll);
 
-  // Estados para el modal de detalle
   const [detalleModalOpen, setDetalleModalOpen] = useState(false);
   const [detalleReserva, setDetalleReserva] = useState<DetalleReserva | null>(
     null,
   );
   const [detalleLoading, setDetalleLoading] = useState(false);
-  const [detalleError, setDetalleError] = useState("");
 
   const openDetalleModal = (reservaId: number) => {
     setDetalleModalOpen(true);
     setDetalleLoading(true);
-    setDetalleError("");
-    setDetalleReserva(null);
-
     getDetalleReserva(reservaId)
       .then((data) => {
         setDetalleReserva(data);
         setDetalleLoading(false);
       })
-      .catch((err) => {
-        setDetalleError(err.message);
-        setDetalleLoading(false);
-      });
+      .catch(() => setDetalleLoading(false));
   };
 
   const closeDetalleModal = () => {
@@ -57,14 +49,15 @@ const ReservasPage = () => {
   const columns = [
     { uid: "id_reserva", name: "ID Reserva", sortable: true },
     { uid: "id_usuario", name: "ID Usuario", sortable: true },
-    { uid: "id_crucero", name: "ID Crucero", sortable: true },
-    { uid: "cantidad_huespedes", name: "Huéspedes", sortable: true },
     { uid: "estado", name: "Estado", sortable: true },
     { uid: "fecha_reserva", name: "Fecha Reserva", sortable: true },
     { uid: "actions", name: "Acciones" },
   ];
 
-  const renderCell = (reserva: Reserva, columnKey: keyof Reserva) => {
+  const renderCell = (
+    reserva: Reserva,
+    columnKey: keyof Reserva | "actions",
+  ) => {
     switch (columnKey) {
       case "fecha_reserva":
         return new Date(reserva.fecha_reserva).toLocaleDateString("es-ES", {
@@ -89,9 +82,6 @@ const ReservasPage = () => {
           </Chip>
         );
 
-      case "cantidad_huespedes":
-        return `${reserva.cantidad_huespedes} huéspedes`;
-
       case "actions":
         return (
           <div className="flex gap-2 justify-center">
@@ -109,7 +99,7 @@ const ReservasPage = () => {
         );
 
       default:
-        return reserva[columnKey];
+        return reserva[columnKey as keyof Reserva];
     }
   };
 
@@ -127,132 +117,374 @@ const ReservasPage = () => {
         data={reservas || []}
         initialVisibleColumns={[
           "id_usuario",
-          "id_crucero",
           "fecha_reserva",
           "estado",
           "actions",
         ]}
-        nombre="Gestion de Reservas"
+        nombre="Gestión de Reservas"
         renderCell={renderCell}
         rowKey="id_reserva"
         searchPlaceholder="Buscar reserva..."
       />
 
-      {detalleModalOpen && (
-        <Modal
-          backdrop="blur"
-          isOpen={detalleModalOpen}
-          onClose={closeDetalleModal}
-        >
-          <ModalContent className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-            {() => (
-              <>
-                <ModalHeader className="border-b border-gray-200 px-6 py-4">
-                  <h2 className="text-xl font-semibold text-gray-800">
-                    Detalle de Reserva
-                  </h2>
-                </ModalHeader>
-                <ModalBody className="px-6 py-4">
-                  {detalleLoading && (
-                    <div className="flex justify-center py-4">
-                      <Spinner
-                        color="success"
-                        label="Cargarndo..."
-                        labelColor="success"
-                      />
+      <Modal
+        backdrop="blur"
+        isOpen={detalleModalOpen}
+        size="5xl"
+        onClose={closeDetalleModal}
+      >
+        <ModalContent className="max-w-4xl rounded-xl shadow-2xl">
+          <>
+            <ModalHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl">
+              <div className="flex flex-col space-y-1">
+                <h2 className="text-2xl font-bold">Detalle de Reserva</h2>
+                <p className="text-sm font-light opacity-90">
+                  ID: #{detalleReserva?.id_reserva}
+                </p>
+              </div>
+            </ModalHeader>
+
+            <ModalBody className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+              {detalleLoading && (
+                <div className="flex justify-center py-8">
+                  <Spinner color="primary" size="lg" />
+                </div>
+              )}
+
+              {detalleReserva && (
+                <div className="space-y-8">
+                  {/* Sección Principal */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Información del Crucero */}
+                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="bg-blue-100 p-3 rounded-full">
+                          <svg
+                            className="w-6 h-6 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold">
+                            {detalleReserva.crucero.nombre}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {detalleReserva.crucero.cantidad_dias} días ·{" "}
+                            {detalleReserva.crucero.barco?.nombre}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <svg
+                            className="w-5 h-5 text-gray-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                          <p>
+                            {new Date(
+                              detalleReserva.fecha_inicio,
+                            ).toLocaleDateString()}{" "}
+                            -{" "}
+                            {new Date(
+                              detalleReserva.fecha_fin,
+                            ).toLocaleDateString()}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <svg
+                            className="w-5 h-5 text-gray-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                            />
+                            <path
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                          <p>
+                            {detalleReserva.puerto_salida.nombre} →{" "}
+                            {detalleReserva.puerto_regreso.nombre}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  {detalleError && (
-                    <div className="text-center text-red-500">
-                      {detalleError}
-                    </div>
-                  )}
-                  {detalleReserva && (
-                    <div className="space-y-6">
+
+                    {/* Estado de Pago */}
+                    <div
+                      className={`p-6 rounded-lg flex flex-col justify-between ${
+                        detalleReserva.factura?.estado === "pagado"
+                          ? "bg-green-50 border border-green-200"
+                          : "bg-yellow-50 border border-yellow-200"
+                      }`}
+                    >
                       <div>
-                        <p className="text-gray-700">
-                          <strong>Usuario:</strong>{" "}
-                          {detalleReserva.usuario.nombre_completo}
-                        </p>
-                        <p className="text-gray-700">
-                          <strong>Crucero:</strong>{" "}
-                          {detalleReserva.crucero.nombre}
-                        </p>
-                        <Chip color="warning" variant="flat">
-                          Estado: {detalleReserva.estado}
-                        </Chip>
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="font-semibold text-lg">
+                            Estado del Pago
+                          </h3>
+                          <Badge
+                            color={
+                              detalleReserva.factura?.estado === "pagado"
+                                ? "success"
+                                : "warning"
+                            }
+                            variant="light"
+                          >
+                            {detalleReserva.factura?.estado || "pendiente"}
+                          </Badge>
+                        </div>
+                        {detalleReserva.factura?.estado === "pendiente" && (
+                          <p className="text-sm text-gray-600">
+                            Fecha límite:{" "}
+                            {new Date(
+                              detalleReserva.fechaCrucero.fecha_limite_pago,
+                            ).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
-                      <div>
-                        <p className="text-gray-700">
-                          <strong>Huéspedes:</strong>{" "}
-                          {detalleReserva.cantidad_huespedes}
+                      <div className="mt-4">
+                        <p className="text-2xl font-bold text-gray-800">
+                          ${(detalleReserva.factura?.total || 0).toFixed(2)}
                         </p>
-                        <p className="text-gray-700">
-                          <strong>Fecha de Reserva:</strong>{" "}
-                          {new Date(
-                            detalleReserva.fecha_reserva,
-                          ).toLocaleDateString("es-ES")}
-                        </p>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-medium text-gray-800 mb-2">
-                          Detalles y Complementos
-                        </h3>
-                        <table className="min-w-full text-sm text-gray-700">
-                          <thead className="bg-gray-100">
-                            <tr>
-                              <th className="px-4 py-2 text-left">
-                                Complemento
-                              </th>
-                              <th className="px-4 py-2 text-left">
-                                Descripción
-                              </th>
-                              <th className="px-4 py-2 text-left">Cantidad</th>
-                              <th className="px-4 py-2 text-left">Subtotal</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {detalleReserva.detalles.map((detalle) => (
-                              <tr
-                                key={detalle.id_detalle}
-                                className="border-b border-gray-200"
-                              >
-                                <td className="px-4 py-2">
-                                  {detalle.complemento.nombre}
-                                </td>
-                                <td className="px-4 py-2">
-                                  {detalle.complemento.descripcion}
-                                </td>
-                                <td className="px-4 py-2">
-                                  {detalle.cantidad}
-                                </td>
-                                <td className="px-4 py-2">
-                                  {detalle.subtotal}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <Textarea
-                          isReadOnly
-                          className="w-full"
-                          defaultValue="Aquí puedes agregar notas sobre la reserva."
-                          label="Notas"
-                          labelPlacement="outside"
-                          placeholder="Ingrese una descripción"
-                          variant="bordered"
-                        />
                       </div>
                     </div>
-                  )}
-                </ModalBody>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
+                  </div>
+
+                  {/* Huéspedes */}
+                  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                    <h3 className="text-lg font-semibold mb-4">
+                      Huéspedes ({detalleReserva.cantidad_huespedes})
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {detalleReserva.huespedes.map((huesped) => (
+                        <div
+                          key={huesped.id_huesped}
+                          className="p-4 bg-gray-50 rounded-lg"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex-shrink-0">
+                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg
+                                  className="w-5 h-5 text-blue-600"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="font-medium">
+                                {huesped.nombre_completo}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {huesped.edad} años · {huesped.genero} ·{" "}
+                                {huesped.nacionalidad}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Detalles de Costos */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Habitaciones */}
+                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                      <h3 className="text-lg font-semibold mb-4">
+                        Habitaciones
+                      </h3>
+                      <div className="space-y-4">
+                        {detalleReserva.detalles
+                          .filter((d) => d.habitacion)
+                          .map((detalle) => (
+                            <div
+                              key={detalle.id_detalle}
+                              className="flex justify-between items-center p-3 bg-gray-50 rounded"
+                            >
+                              <div>
+                                <p className="font-medium">
+                                  {detalle.habitacion?.nombre}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  {detalle.habitacion?.categoria}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm">
+                                  {detalle.cantidad} × $
+                                  {(
+                                    Number(detalle.subtotal) /
+                                    (detalle.cantidad || 1)
+                                  ).toFixed(2)}
+                                </p>
+                                <p className="font-medium">
+                                  ${Number(detalle.subtotal).toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        <div className="pt-4 border-t">
+                          <div className="flex justify-between font-semibold">
+                            <span>Total Habitaciones:</span>
+                            <span>
+                              $
+                              {(detalleReserva.total_habitaciones || 0).toFixed(
+                                2,
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Complementos */}
+                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                      <h3 className="text-lg font-semibold mb-4">
+                        Complementos
+                      </h3>
+                      <div className="space-y-4">
+                        {detalleReserva.detalles
+                          .filter((d) => d.complemento)
+                          .map((detalle) => (
+                            <div
+                              key={detalle.id_detalle}
+                              className="flex justify-between items-center p-3 bg-gray-50 rounded"
+                            >
+                              <div>
+                                <p className="font-medium">
+                                  {detalle.complemento?.nombre}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  {detalle.complemento?.descripcion}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm">
+                                  {detalle.cantidad} × $
+                                  {(
+                                    Number(detalle.complemento?.precio) || 0
+                                  ).toFixed(2)}
+                                </p>
+                                <p className="font-medium">
+                                  ${Number(detalle.subtotal).toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        <div className="pt-4 border-t">
+                          <div className="flex justify-between font-semibold">
+                            <span>Total Complementos:</span>
+                            <span>
+                              $
+                              {(detalleReserva.total_complementos || 0).toFixed(
+                                2,
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Resumen de Pagos */}
+                  <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                    <h3 className="text-lg font-semibold mb-4">
+                      Desglose de Pagos
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span>Subtotal:</span>
+                        <span className="font-medium">
+                          $
+                          {(
+                            (detalleReserva.total_habitaciones || 0) +
+                            (detalleReserva.total_complementos || 0)
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between">
+                        <span>
+                          Impuestos ({detalleReserva.factura?.impuestos || 0}%):
+                        </span>
+                        <span className="font-medium">
+                          $
+                          {(
+                            ((detalleReserva.total_habitaciones +
+                              detalleReserva.total_complementos) *
+                              (detalleReserva.factura?.impuestos || 0)) /
+                            100
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between">
+                        <span>Tarifas:</span>
+                        <span className="font-medium">
+                          ${(detalleReserva.factura?.tarifas || 0).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between pt-3 border-t border-blue-200">
+                        <span className="font-bold">Total:</span>
+                        <span className="font-bold text-blue-600">
+                          $
+                          {(
+                            detalleReserva.total_habitaciones +
+                            detalleReserva.total_complementos +
+                            ((detalleReserva.total_habitaciones +
+                              detalleReserva.total_complementos) *
+                              (detalleReserva.factura?.impuestos || 0)) /
+                              100 +
+                            (detalleReserva.factura?.tarifas || 0)
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </ModalBody>
+          </>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

@@ -61,7 +61,7 @@ export default function DocsPage() {
           setBarcos(dataBarco);
           setDestinos(dataDestino);
           setFechasCruceros(dataFechas);
-          console.log(dataFechas)
+          console.log(dataFechas);
         }
       } catch (err) {
         const errorMessage =
@@ -211,10 +211,10 @@ export default function DocsPage() {
                 </div>
                 <div className="fechasList">
                   {fechasCrucero.filter(
-                    (f) => (f.id_crucero === crucero.id_crucero),
+                    (f) => f.id_crucero === crucero.id_crucero,
                   ) ? (
                     fechasCrucero
-                      .filter((f) => (f.id_crucero === crucero.id_crucero))
+                      .filter((f) => f.id_crucero === crucero.id_crucero)
                       .sort(
                         (a, b) =>
                           new Date(a.fecha_inicio).getTime() -
@@ -229,14 +229,13 @@ export default function DocsPage() {
                           size="sm"
                           variant="dot"
                         >
-                          {new Date(fecha.fecha_inicio + "T12:00:00Z").toLocaleDateString(
-                            "en-MX",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            },
-                          )}
+                          {new Date(
+                            fecha.fecha_inicio + "T12:00:00Z",
+                          ).toLocaleDateString("en-MX", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
                         </Chip>
                       ))
                   ) : (
