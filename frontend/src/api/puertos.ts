@@ -28,5 +28,5 @@ export const puertoService = {
     const response = await fetch(`${API_URL}/puertos`);
 
     return handleResponse<Puerto[]>(response);
-  }
+  },
 };

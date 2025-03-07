@@ -30,6 +30,12 @@ export interface Habitacion {
 }
 
 export const habitacionService = {
+  async getAll(): Promise<Habitacion[]> {
+    const response = await fetch(`${API_URL}/habitaciones`);
+
+    return handleResponse<Habitacion[]>(response);
+  },
+
   async getByBarco(id_barco: number): Promise<Habitacion[]> {
     const response = await fetch(`${API_URL}/barcos/${id_barco}/habitaciones`);
 

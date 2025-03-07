@@ -9,10 +9,20 @@ import {
   TableCell,
 } from "@heroui/react";
 
-import { cruceroService, Crucero } from "../api/cruceros";
+import {
+  cruceroService,
+  Crucero,
+  fechaCruceroService,
+  FechaCrucero,
+} from "../api/cruceros";
 import { barcoService, Barco } from "../api/barcos";
 import { itinerarioService, Itinerario } from "../api/itinerario";
 import { puertoService, Puerto } from "../api/puertos";
+import {
+  precioHabitacionService,
+  PrecioHabitacion,
+} from "../api/precioHabitacion";
+import { habitacionService, Habitacion } from "../api/habitaciones";
 
 import DefaultLayout from "@/layouts/default";
 import LoadingScreen from "@/components/loading";
@@ -35,7 +45,6 @@ export default function DocsPage() {
         const dataBarco = (await barcoService.getAll()).find(
           (b) => dataCrucero?.id_barco === b.id_barco,
         );
-       
 
         if (!dataCrucero || !dataBarco) {
           setError("Error al extraer la data");
@@ -53,8 +62,13 @@ export default function DocsPage() {
     fetchData();
   }, [id]);
 
-
-  if (loading) return <div className="h-[calc(100vh-60px)] w-[100%]"> {LoadingScreen('Crucero')} </div>;
+  if (loading)
+    return (
+      <div className="h-[calc(100vh-60px)] w-[100%]">
+        {" "}
+        {LoadingScreen("Crucero")}{" "}
+      </div>
+    );
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -116,23 +130,23 @@ export default function DocsPage() {
             </button>
           </nav>
           <main className="crucero_main">
-  {(() => {
-    switch (index) {
-      case 1:
-        return <IndexSalida idCrucero={Number(id)} />;
-      case 2:
-        return <IndexItinerario idCrucero={Number(id)} />;
-      case 3:
-        return <IndexIncluido idCrucero={Number(id)} />;
-      case 4:
-        return <IndexBarcos barco={barco} />;
-      case 5:
-        return <IndexHabitaciones barco={barco} />;
-      default:
-        return <p>Selecciona una opción</p>;
-    }
-  })()}
-</main>
+            {(() => {
+              switch (index) {
+                case 1:
+                  return <IndexSalida idCrucero={Number(id)} />;
+                case 2:
+                  return <IndexItinerario idCrucero={Number(id)} />;
+                case 3:
+                  return <IndexIncluido idCrucero={Number(id)} />;
+                case 4:
+                  return <IndexBarcos barco={barco} />;
+                case 5:
+                  return <IndexHabitaciones barco={barco} />;
+                default:
+                  return <p>Selecciona una opción</p>;
+              }
+            })()}
+          </main>
         </div>
       </section>
     </DefaultLayout>
@@ -140,7 +154,99 @@ export default function DocsPage() {
 }
 
 const IndexSalida = ({ idCrucero }: { idCrucero: number }) => {
-  return <p>Fechas Salida</p>;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [fechas, setFechas] = useState<FechaCrucero[]>([]);
+  const [habitaciones, setHabitaciones] = useState<Habitacion[]>([]);
+  const [precios, setPrecios] = useState<PrecioHabitacion[]>([]);
+  const [crucero, setCrucero] = useState<Crucero | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataCrucero = (await cruceroService.getAll()).find(
+          (c) => c.id_crucero === Number(idCrucero),
+        );
+        const dataFechas = (await fechaCruceroService.getAll()).filter(
+          (f) =>
+            f.id_crucero === Number(idCrucero) &&
+            new Date(f.fecha_inicio).getTime() >= Date.now(),
+        );
+        const dataPrecio = await precioHabitacionService.getALL();
+        const dataHabitacion = await habitacionService.getAll();
+
+        if (!dataFechas || !dataPrecio || !dataCrucero || !dataHabitacion) {
+          setError("Error al extraer la data");
+        } else {
+          setCrucero(dataCrucero);
+          setFechas(dataFechas);
+          setPrecios(dataPrecio);
+          setHabitaciones(dataHabitacion);
+        }
+      } catch (err) {
+        setError("Error al obtener los datos: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idCrucero]);
+
+  if (loading)
+    return (
+      <div className="flew-grow h-80">
+        {" "}
+        {LoadingScreen("Fechas de Salida")}{" "}
+      </div>
+    );
+  if (error) return <p>Error: {error}.</p>;
+
+  return (
+    <div>
+      {fechas.map((f) => {
+        const fechaInicio = new Date(f.fecha_inicio + "T12:00:00Z"); // Convertimos la fecha
+        const fechaFin = new Date(fechaInicio); // Creamos una copia para evitar mutar la original
+
+        fechaFin.setDate(fechaFin.getDate() + crucero?.cantidad_dias); // Sumamos 1 día correctamente
+
+        return (
+          <div key={f.id_fecha} className="crucero_salidas">
+            <p className="bg-primary fecha">
+              Desde el{" "}
+              {fechaInicio.toLocaleDateString("es-MX", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              hasta el{" "}
+              {fechaFin.toLocaleDateString("es-MX", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+            <div className="preciosList">
+              {precios
+                .filter((p) => p.id_fecha === f.id_fecha)
+                .map((p) => {
+                  const habitacion = habitaciones.find(
+                    (h) => h.id_habitacion === p.id_habitacion,
+                  );
+
+                  return (
+                    <div key={p.id_precio}>
+                      <p>{habitacion?.categoria}</p>
+                      <p>${p.precio}</p>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
@@ -171,7 +277,10 @@ const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
     fetchData();
   }, [idCrucero]);
 
-  if (loading) return <div className="flew-grow h-80"> {LoadingScreen('Itinerario')} </div>;
+  if (loading)
+    return (
+      <div className="flew-grow h-80"> {LoadingScreen("Itinerario")} </div>
+    );
   if (error) return <p>Error: {error}.</p>;
 
   return (
@@ -180,17 +289,31 @@ const IndexItinerario = ({ idCrucero }: { idCrucero: number }) => {
         <TableColumn>Día</TableColumn>
         <TableColumn>Puerto</TableColumn>
         <TableColumn>Descripción</TableColumn>
-        <TableColumn className="text-center justify-center">Hora Llegada</TableColumn>
-        <TableColumn className="text-center justify-center">Hora Salida</TableColumn>
+        <TableColumn className="text-center justify-center">
+          Hora Llegada
+        </TableColumn>
+        <TableColumn className="text-center justify-center">
+          Hora Salida
+        </TableColumn>
       </TableHeader>
       <TableBody>
         {itinerario.map((i) => (
-          <TableRow key={i.id_itinerario} className="text-center justify-center">
-            <TableCell >Día {i.dia}</TableCell>
-            <TableCell >{puertos.find((p) => p.id_puerto === i.id_puerto)?.nombre}, {puertos.find((p) => p.id_puerto === i.id_puerto)?.pais}</TableCell>
+          <TableRow
+            key={i.id_itinerario}
+            className="text-center justify-center"
+          >
+            <TableCell>Día {i.dia}</TableCell>
+            <TableCell>
+              {puertos.find((p) => p.id_puerto === i.id_puerto)?.nombre},{" "}
+              {puertos.find((p) => p.id_puerto === i.id_puerto)?.pais}
+            </TableCell>
             <TableCell>{i.descripcion}</TableCell>
-            <TableCell className="text-center justify-center">{i.hora_llegada ? `${i.hora_llegada}:00` : `-:--`}</TableCell>
-            <TableCell className="text-center justify-center">{i.hora_salida ? `${i.hora_salida}:00` : `-:--`}</TableCell>
+            <TableCell className="text-center justify-center">
+              {i.hora_llegada ? `${i.hora_llegada}:00` : `-:--`}
+            </TableCell>
+            <TableCell className="text-center justify-center">
+              {i.hora_salida ? `${i.hora_salida}:00` : `-:--`}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

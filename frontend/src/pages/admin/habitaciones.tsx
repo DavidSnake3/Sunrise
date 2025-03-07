@@ -107,7 +107,13 @@ const HabitacionesPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
-  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Habitaciones')} </div>;
+  if (loading)
+    return (
+      <div className="flew-grow h-[calc(100vh-108px)] w-full">
+        {" "}
+        {LoadingScreen("Habitaciones")}{" "}
+      </div>
+    );
 
   return (
     <div className="divAdmin">
@@ -145,7 +151,7 @@ const HabitacionesPage = () => {
               <div className="text-danger text-center p-4">{detalleError}</div>
             )}
 
-            {detalles && !detalleLoading  && !detalleError && (
+            {detalles && !detalleLoading && !detalleError && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem
                   fullWidth

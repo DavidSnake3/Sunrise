@@ -11,12 +11,14 @@ Una aplicación full-stack diseñada para brindar una experiencia de usuario óp
 ## Stack Tecnológico
 
 ### Frontend
+
 - **Vite**: Bundler rápido para un desarrollo eficiente.
 - **React**: Biblioteca para construir interfaces de usuario dinámicas.
 - **TypeScript**: Superset de JavaScript para código más seguro y mantenible.
 - **Otras librerías**: Se incluyen diversas librerías para mejorar funcionalidades y rendimiento.
 
 ### Backend
+
 - **XAMPP**: Entorno de desarrollo que integra Apache, MySQL, PHP y Perl.
 - **PHP**: Lenguaje de programación del lado del servidor.
 - **Laravel**: Framework PHP para aplicaciones web con sintaxis elegante y herramientas avanzadas.

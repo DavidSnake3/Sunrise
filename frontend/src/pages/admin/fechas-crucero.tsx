@@ -61,7 +61,13 @@ const FechasCruceroPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
-  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Fechas')} </div>
+  if (loading)
+    return (
+      <div className="flew-grow h-[calc(100vh-108px)] w-full">
+        {" "}
+        {LoadingScreen("Fechas")}{" "}
+      </div>
+    );
 
   return (
     <div className="divAdmin">

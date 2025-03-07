@@ -5,10 +5,12 @@ use App\Http\Controllers\BarcoController;
 use App\Http\Controllers\CruceroController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DestinoController;
+use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\FechaCruceroController;
 use App\Http\Controllers\FechasCruceroController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HabitacionController;
+use App\Http\Controllers\HuespedController;
 use App\Http\Controllers\ItinerarioController;
 use App\Http\Controllers\PreciosHabitacionController;
 use App\Http\Controllers\PuertoController;
@@ -36,16 +38,18 @@ Route::middleware(['auth:api'])->group(function() {
     Route::post('logout', [AuthController::class,'logout']);
     Route::post('refresh', [AuthController::class,'refresh']);
     Route::post('me', [AuthController::class,'me']);
+    
 });
 
 Route::get('/usuarios', [UserController::class, 'index']);
 Route::get('/cruceros', [CruceroController::class, 'index']);
 Route::get('/destinos', [DestinoController::class, 'index']);
 Route::get('/barcos', [BarcoController::class, 'index']);
-Route::get('/reservas', [ReservaController::class, 'index']);
 Route::get('/fechas-crucero', [FechasCruceroController::class, 'index']);
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/puertos', [PuertoController::class, 'index']);
+Route::get('/precio-habitacion', [PreciosHabitacionController::class, 'index']);
+Route::get('/habitaciones', [HabitacionController::class, 'index']);
 
 
 Route::get('/destinos/{destino}/puertos', [DestinoController::class, 'getPuertos']);
@@ -55,8 +59,24 @@ Route::get('/itinerarios/{id_crucero}', [ItinerarioController::class, 'getByCruc
 Route::get('/fechas-crucero/{id_crucero}', [FechasCruceroController::class, 'getByCrucero']);
 Route::get('/precio-habitacion/{id_habitacion}/{id_fecha}', [PreciosHabitacionController::class, 'getPrecio']);
 Route::get('/precio-habitacion/{id_fecha}', [PreciosHabitacionController::class, 'getPrecioPorFecha']);
-Route::get('/reservas/{id}', [ReservaController::class, 'show']);
+Route::get('/barcos/{id_barco}', [BarcoController::class, 'show']);
 
+// Reserva
+    // Reservas
+    Route::get('/reservas', [ReservaController::class, 'index']);
+    Route::get('/reservas/{id}', [ReservaController::class, 'show']);
+    // Nueva ruta para factura/detalle completo
+    Route::get('/reservas/{id}/detalleFactura', [ReservaController::class, 'detalleFactura']);
+
+    // Facturas
+    Route::get('/facturas', [FacturaController::class, 'index']);
+    Route::get('/facturas/{id}', [FacturaController::class, 'show']);
+    Route::post('/facturas', [FacturaController::class, 'store']);
+
+    // Huéspedes
+    Route::get('/huespedes', [HuespedController::class, 'index']);
+    Route::get('/huespedes/{id}', [HuespedController::class, 'show']);
+    Route::post('/huespedes', [HuespedController::class, 'store']);
 
 Route::get('/imagenes/cruceros/{filename}', function ($filename) {
     return response()->file(public_path("imagenes/cruceros/{$filename}"));

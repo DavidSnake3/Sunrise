@@ -2,27 +2,37 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Crucero extends Model
 {
-    use HasFactory;
-
-    // Nombre de la tabla en la base de datos
     protected $table = 'cruceros';
-
-    // Clave primaria personalizada (si es diferente)
-    protected $primaryKey = 'id_crucero'; 
-    // Timestamps
+    protected $primaryKey = 'id_crucero';
     public $timestamps = false;
 
-    // Campos asignables masivamente
     protected $fillable = [
-        // Lista aquí todos los campos de tu tabla cruceros
-        'nombre', 'nombre', 'foto','cantidad_dias','id_barco' // Ajusta según tu estructura
+        'nombre',
+        'foto',
+        'cantidad_dias',
+        'id_barco',
+        'id_destino'
     ];
-    
-    // Si prefieres no usar fillable, puedes usar guarded
-    // protected $guarded = [];
+
+    // Relación con Itinerarios
+    public function itinerarios()
+    {
+        return $this->hasMany(Itinerario::class, 'id_crucero');
+    }
+
+    // Relación con FechasCrucero
+    public function fechas()
+    {
+        return $this->hasMany(FechasCrucero::class, 'id_crucero');
+    }
+
+    // Relación con Reservas
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class, 'id_crucero');
+    }
 }

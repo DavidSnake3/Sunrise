@@ -18,9 +18,13 @@ class DetalleReserva extends Model
         'subtotal'
     ];
 
-    // Relación con Complemento
     public function complemento()
     {
         return $this->belongsTo(Complemento::class, 'id_complemento');
+    }
+
+    public function habitacion()
+    {
+        return $this->belongsTo(Habitacion::class, 'id_habitacion');
     }
 }

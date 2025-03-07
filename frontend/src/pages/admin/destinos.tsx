@@ -66,19 +66,25 @@ const DestinosPage = () => {
   if (!user?.admin)
     return <div className="p-4 text-danger">Acceso no autorizado</div>;
   if (error) return <div className="p-4 text-danger">Error: {error}</div>;
-  if (loading) return <div className="flew-grow h-[calc(100vh-108px)] w-full"> {LoadingScreen('Destinos')} </div>;
+  if (loading)
+    return (
+      <div className="flew-grow h-[calc(100vh-108px)] w-full">
+        {" "}
+        {LoadingScreen("Destinos")}{" "}
+      </div>
+    );
 
   return (
     <div className="divAdmin">
-    <DataTable<Destino>
-      columns={columns}
-      data={destinos || []}
-      initialVisibleColumns={["nombre", "foto", "actions"]}
-      renderCell={renderCell}
-      rowKey="id_destino"
-      searchPlaceholder="Buscar destino..."
-      nombre="Gestion de Destinos"
-    />
+      <DataTable<Destino>
+        columns={columns}
+        data={destinos || []}
+        initialVisibleColumns={["nombre", "foto", "actions"]}
+        nombre="Gestion de Destinos"
+        renderCell={renderCell}
+        rowKey="id_destino"
+        searchPlaceholder="Buscar destino..."
+      />
     </div>
   );
 };

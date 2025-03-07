@@ -28,4 +28,10 @@ export const precioHabitacionService = {
 
     return handleResponse(response);
   },
+
+  getALL: async (): Promise<PrecioHabitacion[]> => {
+    const response = await fetch(`${API_URL}/precio-habitacion`);
+
+    return handleResponse(response);
+  },
 };
