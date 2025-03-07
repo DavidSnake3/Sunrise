@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Complemento extends Model
 {
-    // Actualiza el nombre de la tabla según corresponda en tu base de datos
-    protected $table = 'cruceros_complementos';
+    protected $table = 'complementos';
     protected $primaryKey = 'id_complemento';
     public $timestamps = false;
 

@@ -34,10 +34,11 @@ public function show($id)
         try {
             $reserva = Reserva::with([
                 'usuario:id_usuario,nombre_completo',
-                'crucero:id_crucero,nombre,cantidad_dias',
-                'detalles.complemento',
+                'crucero:id_crucero,nombre,cantidad_dias,id_barco',
+                'crucero.barco:id_barco,nombre', 
+                'detalles.complemento', 
                 'detalles.habitacion',
-                'huespedes',
+                'huespedes:id_huesped,id_reserva,nombre_completo,genero,edad,fecha_nacimiento,nacionalidad',
                 'factura',
                 'fechaCrucero',
                 'crucero.itinerarios.puerto'

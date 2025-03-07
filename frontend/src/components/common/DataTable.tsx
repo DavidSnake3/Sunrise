@@ -112,13 +112,13 @@ export const DataTable = <T extends Record<string, any>>({
       sortDescriptor={sortDescriptor}
       topContent={
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-5 items-end">
+          <div className="flex items-center gap-5">
             <h1 className="text-2xl font-bold">{nombre}</h1>
             <Input
               isClearable
               className="w-full sm:max-w-[44%]"
-              startContent={<i className="fi fi-rr-search" />}
               placeholder={searchPlaceholder}
+              startContent={<i className="fi fi-rr-search" />}
               value={filterValue}
               onClear={onClear}
               onValueChange={onSearchChange}

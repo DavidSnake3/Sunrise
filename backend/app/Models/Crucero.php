@@ -35,4 +35,10 @@ class Crucero extends Model
     {
         return $this->hasMany(Reserva::class, 'id_crucero');
     }
+
+    public function barco()
+    {
+        return $this->belongsTo(Barco::class, 'id_barco');
+    }
+    
 }
