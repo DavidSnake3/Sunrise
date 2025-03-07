@@ -5,6 +5,10 @@ export interface Reserva {
   cantidad_huespedes: number;
   estado: string;
   fecha_reserva: string;
+  usuario?: {
+    // Nueva propiedad
+    nombre_completo: string;
+  };
 }
 
 const API_URL = "http://localhost:8000/api";

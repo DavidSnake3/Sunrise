@@ -16,4 +16,5 @@ class CruceroController extends Controller
         // Retorna respuesta JSON
         return response()->json($cruceros);
     }
+    
 }

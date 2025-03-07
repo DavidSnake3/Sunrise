@@ -7,7 +7,6 @@ import {
   ModalHeader,
   ModalBody,
   Badge,
-  Spinner,
 } from "@heroui/react";
 
 import { reservaService, Reserva } from "../../api/reservas";
@@ -15,6 +14,7 @@ import { DataTable } from "../../components/common/DataTable";
 import { useAuth } from "../../contexts/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
 import { getDetalleReserva, DetalleReserva } from "../../api/detalleReserva";
+
 import LoadingScreen from "@/components/loading";
 
 const ReservasPage = () => {
@@ -31,10 +31,15 @@ const ReservasPage = () => {
   );
   const [detalleLoading, setDetalleLoading] = useState(false);
 
-  const openDetalleModal = (reservaId: number) => {
+  const [selectedReservaEstado, setSelectedReservaEstado] = useState<
+    string | null
+  >(null);
+
+  const openDetalleModal = (reserva: Reserva) => {
     setDetalleModalOpen(true);
+    setSelectedReservaEstado(reserva.estado);
     setDetalleLoading(true);
-    getDetalleReserva(reservaId)
+    getDetalleReserva(reserva.id_reserva)
       .then((data) => {
         setDetalleReserva(data);
         setDetalleLoading(false);
@@ -49,7 +54,11 @@ const ReservasPage = () => {
 
   const columns = [
     { uid: "id_reserva", name: "ID Reserva", sortable: true },
-    { uid: "id_usuario", name: "ID Usuario", sortable: true },
+    {
+      uid: "id_usuario",
+      name: "Usuario",
+      sortable: true,
+    },
     { uid: "estado", name: "Estado", sortable: true },
     { uid: "fecha_reserva", name: "Fecha Reserva", sortable: true },
     { uid: "actions", name: "Acciones" },
@@ -67,13 +76,16 @@ const ReservasPage = () => {
           day: "numeric",
         });
 
+      case "id_usuario":
+        return reserva.usuario?.nombre_completo || `ID: ${reserva.id_usuario}`;
+
       case "estado":
         return (
           <Chip
             color={
-              reserva.estado.toLowerCase() === "confirmada"
+              reserva.estado.toLowerCase() === "cancelada"
                 ? "success"
-                : reserva.estado.toLowerCase() === "pendiente"
+                : reserva.estado.toLowerCase() === "parcial"
                   ? "warning"
                   : "danger"
             }
@@ -89,7 +101,7 @@ const ReservasPage = () => {
             <Button
               color="primary"
               size="sm"
-              onPress={() => openDetalleModal(reserva.id_reserva)}
+              onPress={() => openDetalleModal(reserva)}
             >
               Detalles
             </Button>
@@ -100,7 +112,9 @@ const ReservasPage = () => {
         );
 
       default:
-        return reserva[columnKey as keyof Reserva];
+        const value = reserva[columnKey as keyof Reserva];
+
+        return JSON.stringify(value);
     }
   };
 
@@ -142,19 +156,22 @@ const ReservasPage = () => {
       >
         <ModalContent className="max-w-4xl rounded-xl shadow-2xl">
           <>
-            <ModalHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl">
+            <ModalHeader className="bg-primary text-white py-2 px-8 rounded-t-xl">
               <div className="flex flex-col space-y-1">
                 <h2 className="text-2xl font-bold">Detalle de Reserva</h2>
                 <p className="text-sm font-light opacity-90">
-                  ID: #{detalleReserva?.id_reserva}
+                  Reservación del usuario:{" "}
+                  {detalleReserva?.usuario?.nombre_completo ||
+                    "Nombre no disponible"}
                 </p>
               </div>
             </ModalHeader>
 
             <ModalBody className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
               {detalleLoading && (
-                <div className="flex justify-center py-8">
-                  <Spinner color="primary" size="lg" />
+                <div className="flew-grow h-[calc(100vh-108px)] w-full">
+                  {" "}
+                  {LoadingScreen("Detalles")}{" "}
                 </div>
               )}
 
@@ -165,20 +182,11 @@ const ReservasPage = () => {
                     {/* Información del Crucero */}
                     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className="bg-blue-100 p-3 rounded-full">
-                          <svg
-                            className="w-6 h-6 text-blue-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                            />
-                          </svg>
+                        <div className="bg-primary py-3 px-4 rounded-full">
+                          <i
+                            className="fi fi-rr-ship text-lg text-white"
+                            id="iconBarco"
+                          />
                         </div>
                         <div>
                           <h3 className="text-lg font-semibold">
@@ -248,9 +256,14 @@ const ReservasPage = () => {
                     {/* Estado de Pago */}
                     <div
                       className={`p-6 rounded-lg flex flex-col justify-between ${
-                        detalleReserva.factura?.estado === "pagado"
+                        selectedReservaEstado?.toLowerCase() === "cancelada" ||
+                        detalleReserva.factura?.metodo_pago === "pago_unico"
                           ? "bg-green-50 border border-green-200"
-                          : "bg-yellow-50 border border-yellow-200"
+                          : selectedReservaEstado?.toLowerCase() === "parcial"
+                            ? "bg-yellow-50 border border-yellow-200"
+                            : detalleReserva.factura?.estado === "pagado"
+                              ? "bg-green-50 border border-green-200"
+                              : "bg-yellow-50 border border-yellow-200"
                       }`}
                     >
                       <div>
@@ -260,27 +273,56 @@ const ReservasPage = () => {
                           </h3>
                           <Badge
                             color={
-                              detalleReserva.factura?.estado === "pagado"
+                              selectedReservaEstado?.toLowerCase() ===
+                                "cancelada" ||
+                              detalleReserva.factura?.metodo_pago ===
+                                "pago_unico"
                                 ? "success"
-                                : "warning"
+                                : selectedReservaEstado?.toLowerCase() ===
+                                    "parcial"
+                                  ? "warning"
+                                  : detalleReserva.factura?.estado === "pagado"
+                                    ? "success"
+                                    : "warning"
                             }
-                            variant="light"
+                            variant="shadow"
                           >
-                            {detalleReserva.factura?.estado || "pendiente"}
+                            {selectedReservaEstado?.toLowerCase() ===
+                            "cancelada"
+                              ? "Cancelado"
+                              : detalleReserva.factura?.metodo_pago ===
+                                  "pago_unico"
+                                ? "Pagado"
+                                : selectedReservaEstado?.toLowerCase() ===
+                                    "parcial"
+                                  ? "Pendiente"
+                                  : detalleReserva.factura?.estado ||
+                                    "pendiente"}
                           </Badge>
                         </div>
-                        {detalleReserva.factura?.estado === "pendiente" && (
+
+                        {(selectedReservaEstado?.toLowerCase() ===
+                          "cancelada" ||
+                          (detalleReserva.factura?.metodo_pago ===
+                            "dos_pagos" &&
+                            selectedReservaEstado?.toLowerCase() ===
+                              "parcial")) && (
                           <p className="text-sm text-gray-600">
-                            Fecha límite:{" "}
-                            {new Date(
-                              detalleReserva.fechaCrucero.fecha_limite_pago,
-                            ).toLocaleDateString()}
+                            {selectedReservaEstado?.toLowerCase() ===
+                            "cancelada"
+                              ? "Pago cancelado realizado"
+                              : "Pago parcial realizado"}
                           </p>
                         )}
                       </div>
                       <div className="mt-4">
                         <p className="text-2xl font-bold text-gray-800">
-                          ${(detalleReserva.factura?.total || 0).toFixed(2)}
+                          $
+                          {selectedReservaEstado?.toLowerCase() ===
+                            "cancelada" ||
+                          detalleReserva.factura?.metodo_pago === "pago_unico"
+                            ? 0
+                            : (detalleReserva.factura?.total || 0).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -288,9 +330,7 @@ const ReservasPage = () => {
 
                   {/* Huéspedes */}
                   <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                    <h3 className="text-lg font-semibold mb-4">
-                      Huéspedes ({detalleReserva.cantidad_huespedes})
-                    </h3>
+                    <h3 className="text-lg font-semibold mb-4">Huéspedes</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {detalleReserva.huespedes.map((huesped) => (
                         <div
@@ -431,12 +471,12 @@ const ReservasPage = () => {
                   </div>
 
                   {/* Resumen de Pagos */}
-                  <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                    <h3 className="text-lg font-semibold mb-4">
+                  <div className="bg-primary p-6 rounded-lg border border-primary-50">
+                    <h3 className="text-lg font-semibold mb-4 text-white">
                       Desglose de Pagos
                     </h3>
                     <div className="space-y-3">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between  text-white">
                         <span>Subtotal:</span>
                         <span className="font-medium">
                           $
@@ -447,7 +487,7 @@ const ReservasPage = () => {
                         </span>
                       </div>
 
-                      <div className="flex justify-between">
+                      <div className="flex justify-between  text-white">
                         <span>
                           Impuestos ({detalleReserva.factura?.impuestos || 0}%):
                         </span>
@@ -462,16 +502,16 @@ const ReservasPage = () => {
                         </span>
                       </div>
 
-                      <div className="flex justify-between">
+                      <div className="flex justify-between  text-white">
                         <span>Tarifas:</span>
                         <span className="font-medium">
                           ${(detalleReserva.factura?.tarifas || 0).toFixed(2)}
                         </span>
                       </div>
 
-                      <div className="flex justify-between pt-3 border-t border-blue-200">
+                      <div className="flex justify-between pt-3 border-t border-white-200 text-white">
                         <span className="font-bold">Total:</span>
-                        <span className="font-bold text-blue-600">
+                        <span className="font-bold text-primary-50">
                           $
                           {(
                             detalleReserva.total_habitaciones +

@@ -13,7 +13,7 @@ export default function LoadingScreen(name: string) {
         {name !== "" && (
           <p className=" text-lg font-semibold animate-pulse mt-4">
             Cargando {name}
-            <span className="dot-animation"></span>
+            <span className="dot-animation" />
           </p>
         )}
       </div>
