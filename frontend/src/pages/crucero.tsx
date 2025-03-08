@@ -178,7 +178,7 @@ export default function DocsPage() {
                 <img
                   alt="Card background"
                   className="object-cover"
-                  src="/crucero.png"
+                  src={`http://localhost:8000/imagenes/cruceros/${crucero.foto}`}
                   width={270}
                 />
               </div>

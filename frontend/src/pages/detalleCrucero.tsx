@@ -23,6 +23,7 @@ import {
   PrecioHabitacion,
 } from "../api/precioHabitacion";
 import { habitacionService, Habitacion } from "../api/habitaciones";
+import { destinoService, Destino } from "../api/destinos";
 
 import DefaultLayout from "@/layouts/default";
 import LoadingScreen from "@/components/loading";
@@ -35,6 +36,7 @@ export default function DocsPage() {
   const [error, setError] = useState(null);
   const [crucero, setCrucero] = useState<Crucero | null>(null);
   const [barco, setBarco] = useState<Barco | null>(null);
+  const [destino, setDestino] = useState<Destino[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,12 +47,14 @@ export default function DocsPage() {
         const dataBarco = (await barcoService.getAll()).find(
           (b) => dataCrucero?.id_barco === b.id_barco,
         );
+        const dataDestino = await destinoService.getAll();
 
-        if (!dataCrucero || !dataBarco) {
+        if (!dataCrucero || !dataBarco || !dataDestino) {
           setError("Error al extraer la data");
         } else {
           setCrucero(dataCrucero);
           setBarco(dataBarco);
+          setDestino(dataDestino);
         }
       } catch (err) {
         setError("Error al obtener los datos: ", err);
@@ -75,7 +79,10 @@ export default function DocsPage() {
     <DefaultLayout>
       <section className="flex-grow min-h-[calc(100vh-108px)] crucero_detalle">
         <header className="header">
-          <img alt="" src="/crucero.png" />
+          <img
+            alt=""
+            src={`http://localhost:8000/imagenes/cruceros/${crucero?.foto}`}
+          />
           <div className="header_detalle">
             <h1 className="name">{crucero?.nombre}</h1>
             <div className="detalle_contenido">
@@ -83,7 +90,11 @@ export default function DocsPage() {
                 <i className="fi fi-rr-ship" /> {barco?.nombre}
               </p>
               <p>
-                <i className="fi fi-rr-anchor" /> Algun Puerto
+                <i className="fi fi-rr-anchor" />{" "}
+                {
+                  destino.find((d) => d.id_destino === crucero?.id_destino)
+                    ?.nombre
+                }
               </p>
               <p>
                 <i className="fi fi-rr-sunrise" />{" "}
