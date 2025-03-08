@@ -55,6 +55,8 @@
       width: 100%;
       img {
         width: 100%;
+        max-width: 350px;
+        max-height: 180px;
       }
     }
 
