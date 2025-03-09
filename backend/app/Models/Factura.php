@@ -16,13 +16,22 @@ class Factura extends Model
         'impuestos',
         'tarifas',
         'total',
-        'metodo_pago',
-        'fecha_pago',
-        'estado'
+        'subtotal_complementos',
+        'subtotal_habitaciones',
+        'fecha_limite'
+    ];
+
+    protected $casts = [
+        'fecha_limite' => 'date'
     ];
 
     public function reserva()
     {
         return $this->belongsTo(Reserva::class, 'id_reserva');
+    }
+
+    public function registrosFactura()
+    {
+        return $this->hasMany(RegistroFactura::class, 'id_factura');
     }
 }

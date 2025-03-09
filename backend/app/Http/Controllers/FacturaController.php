@@ -2,48 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Factura;
+use App\Http\Resources\{FacturaResource, RegistroFacturaResource};
+use App\Models\{Factura, RegistroFactura};
 use Illuminate\Http\Request;
 
 class FacturaController extends Controller
 {
-    public function index()
+    public function getByReserva(Request $request)
     {
-        try {
-            $facturas = Factura::with('reserva')->get();
-            return response()->json($facturas);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Error al cargar facturas',
-                'details' => $e->getMessage()
-            ], 500);
-        }
-    }
+        $request->validate([
+            'reserva_id' => 'required|integer|min:1'
+        ]);
 
-    public function show($id)
-    {
-        try {
-            $factura = Factura::with('reserva')->findOrFail($id);
-            return response()->json($factura);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Error al cargar factura',
-                'details' => $e->getMessage()
-            ], 500);
-        }
-    }
+        $factura = Factura::with('registrosFactura')
+            ->where('id_reserva', $request->reserva_id)
+            ->firstOrFail();
 
-    public function store(Request $request)
+        return new FacturaResource($factura);
+    }
+    
+    public function getRegistros(Request $request)
     {
-         try {
-             $data = $request->all();
-             $factura = Factura::create($data);
-             return response()->json($factura, 201);
-         } catch (\Exception $e) {
-             return response()->json([
-                 'error' => 'Error al crear factura',
-                 'details' => $e->getMessage()
-             ], 500);
-         }
+        $request->validate([
+            'factura_id' => 'required|integer|min:1'
+        ]);
+
+        $registros = RegistroFactura::where('id_factura', $request->factura_id)->get();
+        
+        return RegistroFacturaResource::collection($registros);
     }
 }

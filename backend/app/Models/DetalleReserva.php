@@ -13,18 +13,17 @@ class DetalleReserva extends Model
     protected $fillable = [
         'id_reserva',
         'id_complemento',
-        'id_habitacion',
         'cantidad',
         'subtotal'
     ];
 
+    public function reserva()
+    {
+        return $this->belongsTo(Reserva::class, 'id_reserva');
+    }
+
     public function complemento()
     {
         return $this->belongsTo(Complemento::class, 'id_complemento');
-    }
-
-    public function habitacion()
-    {
-        return $this->belongsTo(Habitacion::class, 'id_habitacion');
     }
 }

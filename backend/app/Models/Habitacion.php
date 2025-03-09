@@ -17,6 +17,7 @@ class Habitacion extends Model
         'nombre',
         'descripcion',
         'capacidad_min',
+        
         'capacidad_max',
         'tamaño',
         'cantidad_disponibles'
@@ -27,13 +28,12 @@ class Habitacion extends Model
         return $this->belongsTo(Barco::class, 'id_barco');
     }
 
-        public function detalles()
+    public function detallesHabitacion()
     {
         return $this->hasOne(DetalleHabitacion::class, 'id_habitacion');
     }
-
-    public function preciosHabitacion()
-    {
+    
+    public function precios() {
         return $this->hasMany(PreciosHabitacion::class, 'id_habitacion');
     }
 

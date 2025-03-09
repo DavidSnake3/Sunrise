@@ -16,13 +16,14 @@ class PreciosHabitacion extends Model
         'precio'
     ];
 
-    public function habitacion()
-    {
-        return $this->belongsTo(Habitacion::class, 'id_habitacion');
-    }
-
-    public function fechaCrucero()
+    public function fecha()
     {
         return $this->belongsTo(FechasCrucero::class, 'id_fecha');
+    }
+
+    public function habitacion()
+    {
+        // Reutilizamos el modelo Habitacion ya definido en otro módulo
+        return $this->belongsTo(Habitacion::class, 'id_habitacion');
     }
 }

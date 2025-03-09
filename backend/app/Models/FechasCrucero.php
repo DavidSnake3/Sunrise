@@ -21,7 +21,7 @@ class FechasCrucero extends Model
         return $this->belongsTo(Crucero::class, 'id_crucero');
     }
 
-    public function preciosHabitacion()
+    public function preciosHabitaciones()
     {
         return $this->hasMany(PreciosHabitacion::class, 'id_fecha');
     }

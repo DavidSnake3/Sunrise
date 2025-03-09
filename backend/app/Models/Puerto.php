@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use HasHashId;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,9 +21,8 @@ class Puerto extends Model
         'foto'
     ];
 
-    public function destino()
-    {
-        return $this->belongsTo(Destino::class, 'id_destino', 'id_destino');
+    public function destino() {
+        return $this->belongsTo(Destino::class, 'id_destino');
     }
 
     public function itinerarios()

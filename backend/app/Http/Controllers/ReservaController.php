@@ -2,80 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Crucero;
-use App\Models\Itinerario;
+use App\Http\Resources\{
+    ReservaResource,
+    ReservaFullResource
+};
 use App\Models\Reserva;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class ReservaController extends Controller
 {
-// app/Http/Controllers/ReservaController.php
-public function index()
-{
-    try {
-        $reservas = Reserva::with([
-            'usuario:id_usuario,nombre_completo',
-            'crucero:id_crucero,nombre'
-        ])->get();
-
-        return response()->json($reservas);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'Error al cargar reservas',
-            'details' => $e->getMessage()
-        ], 500);
-    }
-}
-
-public function show($id)
+    public function getAll(Request $request)
     {
-        try {
-            $reserva = Reserva::with([
-                'usuario:id_usuario,nombre_completo',
-                'crucero:id_crucero,nombre,cantidad_dias,id_barco',
-                'crucero.barco:id_barco,nombre', 
-                'detalles.complemento', 
-                'detalles.habitacion',
-                'huespedes:id_huesped,id_reserva,nombre_completo,genero,edad,fecha_nacimiento,nacionalidad',
-                'factura',
-                'fechaCrucero',
-                'crucero.itinerarios.puerto'
-            ])->findOrFail($id);
+        $request->validate([
+            'estado' => 'sometimes|in:PENDIENTE,PARCIAL,CANCELADO,PAGADO',
+            'id' => 'sometimes|integer|min:1'
+        ]);
 
-            // Obtener puertos de salida y regreso
-            $itinerarios = Itinerario::where('id_crucero', $reserva->id_crucero)
-                ->orderBy('dia')
-                ->get();
-
-            $puertoSalida = $itinerarios->first()->puerto;
-            $puertoRegreso = $itinerarios->last()->puerto;
-
-            // Calcular fechas
-            $fechaInicio = $reserva->fechaCrucero->fecha_inicio;
-            $fechaFin = date('Y-m-d', strtotime($fechaInicio . " +{$reserva->crucero->cantidad_dias} days"));
-
-            // Calcular totales
-            $totalHabitaciones = $reserva->detalles->where('id_habitacion', '!=', null)->sum('subtotal');
-            $totalComplementos = $reserva->detalles->where('id_complemento', '!=', null)->sum('subtotal');
-            
-            return response()->json([
-                ...$reserva->toArray(),
-                'puerto_salida' => $puertoSalida,
-                'puerto_regreso' => $puertoRegreso,
-                'fecha_inicio' => $fechaInicio,
-                'fecha_fin' => $fechaFin,
-                'total_habitaciones' => $totalHabitaciones,
-                'total_complementos' => $totalComplementos
-            ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Error al cargar el detalle de la reserva',
-                'details' => $e->getMessage()
-            ], 500);
+        if ($request->has('id')) {
+            return $this->getById($request);
         }
+
+        $query = Reserva::query();
+
+        if ($request->has('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        return ReservaResource::collection($query->get());
     }
 
+    public function getById(Request $request)
+    {
+        $request->validate(['id' => 'required|integer|min:1']);
+    
+        $reserva = Reserva::with([
+            'usuario',
+            'crucero.destino',       // Relación corregida
+            'crucero.barco',         // Relación directa al barco
+            'huespedes',
+            'detallesReserva.complemento',
+            'reservaHabitaciones.habitacion.detallesHabitacion', // Relación a detalles
+            'factura.registrosFactura'
+        ])->findOrFail($request->id);
+    
+        return new ReservaFullResource($reserva);
+    }
 }

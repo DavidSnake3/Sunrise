@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Huesped extends Model
 {
     protected $table = 'huespedes';
-    protected $primaryKey = 'id_huesped';
+    protected $primaryKey = 'Id_huesped';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_reserva',
+        'Id_reserva',
         'nombre_completo',
         'genero',
         'edad',
@@ -21,6 +21,6 @@ class Huesped extends Model
 
     public function reserva()
     {
-        return $this->belongsTo(Reserva::class, 'id_reserva');
+        return $this->belongsTo(Reserva::class, 'Id_reserva');
     }
 }

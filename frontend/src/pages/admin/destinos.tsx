@@ -6,7 +6,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
 
 import LoadingScreen from "@/components/loading";
-
 import { DataTable } from "@/components/common/DataTable";
 
 const DestinosPage = () => {

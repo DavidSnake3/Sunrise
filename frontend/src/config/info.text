@@ -2,6 +2,7 @@ Para almacenar las fechas de cada crucero
   const [fechasCruceros, setFechasCruceros] = useState<{
     [key: number]: FechaCrucero[];
 }>({});
+
 const getFechasCrucero = async (
     id_crucero: number,
   ): Promise<FechaCrucero[]> => {

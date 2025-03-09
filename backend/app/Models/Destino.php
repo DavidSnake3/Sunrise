@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use HasHashId;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,8 +19,7 @@ class Destino extends Model
         'foto'
     ];
 
-    public function puertos()
-    {
-        return $this->hasMany(Puerto::class, 'id_destino', 'id_destino');
+    public function puertos() {
+        return $this->hasMany(Puerto::class, 'id_destino');
     }
 }
