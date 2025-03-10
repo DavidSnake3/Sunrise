@@ -1,39 +1,33 @@
+import axios from "axios";
 import { handleResponse } from "./auth";
+import { Habitacion } from "./habitaciones";
 
 export interface Barco {
-  id_barco: number;
+  id: number;
   nombre: string;
-  descripcion?: string; // si dispones de este campo
-  capacidad_pasajeros: number;
-  capacidad_tripulantes: number;
-  total_habitaciones: number;
-  velocidad_maxima: number;
+  cant_pasajeros: number;
+  cant_tripulantes: number;
+  velocidad: number;
   tonelaje: number;
   altura: number;
   largo: number;
   ancho: number;
-  año_construccion: number;
-  habitaciones_count?: number;
-  habitaciones?: any[];
-  habitaciones_sum_cantidad_Disponibles?: number;
+  año: number;
+  habitaciones?: Habitacion[];
 }
 
 const API_URL = "http://localhost:8000/api";
 
 export const barcoService = {
   async getAll(): Promise<Barco[]> {
-    const response = await fetch(`${API_URL}/barcos`);
+    const response = await axios.get(`${API_URL}/barcos`);
 
-    return handleResponse<Barco[]>(response);
+    return response.data.data;
   },
+
   async getById(id_barco: number): Promise<Barco> {
-    const response = await fetch(`${API_URL}/barcos/${id_barco}`);
+    const response = await axios.get(`${API_URL}/barcos?id=${id_barco}`);
 
-    return handleResponse<Barco>(response);
-  },
-  async getHabitaciones(id_barco: number): Promise<any> {
-    const response = await fetch(`${API_URL}/barcos/${id_barco}/habitaciones`);
-
-    return handleResponse(response);
+    return response.data.data;
   },
 };

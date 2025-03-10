@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@heroui/react";
 
-import {
-  precioHabitacionService,
-  PrecioHabitacion,
-} from "../../api/precioHabitacion";
+import { fechaCruceroService, PrecioHabitacion } from "../../api/fechaCrucero";
 import { useAuth } from "../../contexts/AuthContext";
 
 import { DataTable } from "@/components/common/DataTable";

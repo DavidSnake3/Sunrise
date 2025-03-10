@@ -10,7 +10,10 @@ class ItinerarioResource extends JsonResource
     {
         return [
             'id'     => $this->id_itinerario,
-            'orden'  => $this->orden,
+            'dia' => $this->dia,
+            'descripcion' => $this->descripcion,
+            'salida' => $this->hora_salida,
+            'llegada' => $this->hora_llegada,
             'puerto' => new PuertoResource($this->whenLoaded('puerto')),
             'links'  => [
                 'self'    => url("/api/itinerarios?id={$this->id_itinerario}"),

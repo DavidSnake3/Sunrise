@@ -17,7 +17,6 @@ class Habitacion extends Model
         'nombre',
         'descripcion',
         'capacidad_min',
-        
         'capacidad_max',
         'tamaño',
         'cantidad_disponibles'

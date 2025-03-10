@@ -43,20 +43,20 @@ class BarcoController extends Controller
 
         // Si se pasa 'id': detalle de la habitación
         if ($request->has('id')) {
-            $habitacion = Habitacion::with(['barco', 'detalleHabitacion'])->find($request->id);
+            $habitacion = Habitacion::with(['barco', 'detallesHabitacion'])->find($request->id);
             return $habitacion ? new HabitacionResource($habitacion) : response()->json(['error' => 'No encontrado'], 404);
         }
 
         // Si se pasa 'barco_id': habitaciones de ese barco
         if ($request->has('barco_id')) {
-            $habitaciones = Habitacion::with('detalleHabitacion')
+            $habitaciones = Habitacion::with('detallesHabitacion')
                 ->where('id_barco', $request->barco_id)
                 ->get();
             return HabitacionResource::collection($habitaciones);
         }
 
         // Sin parámetros: todas las habitaciones
-        $habitaciones = Habitacion::with('detalleHabitacion')->get();
+        $habitaciones = Habitacion::with('detallesHabitacion')->get();
         return HabitacionResource::collection($habitaciones);
     }
 
@@ -80,6 +80,6 @@ class BarcoController extends Controller
             return $detalle ? new DetalleHabitacionResource($detalle) : response()->json(['error' => 'No encontrado'], 404);
         }
 
-        return DetalleHabitacionResource::collection(DetalleHabitacion::all());
+        return DetalleHabitacionResource::collection(DetalleHabitacion::with('habitacion')->get());
     }
 }

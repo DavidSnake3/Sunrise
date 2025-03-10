@@ -1,52 +1,62 @@
 // src/api/habitaciones.ts
+import axios from "axios";
 import { handleResponse } from "./auth";
+import { Barco } from "./barcos";
 
 const API_URL = "http://localhost:8000/api";
 
 export interface DetalleHabitacion {
-  id_detalle: number;
-  id_habitacion: number;
-  descripcion_larga: string;
-  metros_cuadrados: number;
-  cantidad_camas: number;
+  id: number;
+  descripcion: string;
+  cant_camas: number;
   tipo_cama: string;
   amenidades: string[];
   capacidad_maxima: number;
   vista_mar: boolean;
   balcon: boolean;
+  habitacion?: Habitacion;
 }
 
 // Eliminar la importación conflictiva si existe
 export interface Habitacion {
-  id_habitacion: number;
-  id_barco: number;
+  id: number;
   categoria: string;
   nombre: string;
   descripcion: string;
-  capacidad_min: number;
-  capacidad_max: number;
-  tamaño: number;
-  cantidad_disponibles: number;
+  min: number;
+  max: number;
+  size: number;
+  cantidad: number;
+  barco?: Barco;
+  detalle?: DetalleHabitacion[];
 }
 
 export const habitacionService = {
   async getAll(): Promise<Habitacion[]> {
-    const response = await fetch(`${API_URL}/habitaciones`);
+    const response = await axios.get(`${API_URL}/habitaciones`);
 
-    return handleResponse<Habitacion[]>(response);
+    return response.data.data;
   },
 
   async getByBarco(id_barco: number): Promise<Habitacion[]> {
-    const response = await fetch(`${API_URL}/barcos/${id_barco}/habitaciones`);
-
-    return handleResponse<Habitacion[]>(response);
-  },
-
-  async getDetalles(id_habitacion: number): Promise<DetalleHabitacion> {
-    const response = await fetch(
-      `${API_URL}/habitaciones/${id_habitacion}/detalles`,
+    const response = await axios.get(
+      `${API_URL}/habitaciones?barco_id=${id_barco}`,
     );
 
-    return handleResponse<DetalleHabitacion>(response);
+    return response.data.data;
+  },
+
+  async getById(id: number): Promise<Habitacion[]> {
+    const response = await axios.get(`${API_URL}/habitaciones?id=${id}`);
+
+    return response.data.data;
+  },
+
+  async getDetalle(id_habitacion: number): Promise<DetalleHabitacion> {
+    const response = await axios.get(
+      `${API_URL}/detalle_habitacion?habitacion_id=${id_habitacion}`,
+    );
+
+    return response.data.data;
   },
 };

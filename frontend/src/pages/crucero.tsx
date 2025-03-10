@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  cruceroService,
-  Crucero,
-  fechaCruceroService,
-  FechaCrucero,
-} from "../api/cruceros";
-import { barcoService, Barco } from "../api/barcos";
-import { Destino, destinoService } from "../api/destinos";
+import { crucerosGet, Crucero } from "../api/cruceros";
 
 import DefaultLayout from "@/layouts/default";
 import LoadingScreen from "@/components/loading";
@@ -22,18 +15,17 @@ import {
   Select,
   SelectItem,
   Chip,
-  Spinner,
 } from "@heroui/react";
+
+import { Destino, destinoService } from "@/api/destinos";
 
 export default function DocsPage() {
   const Navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
-  const [destinos, setDestinos] = useState<Destino[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cruceros, setCruceros] = useState<Crucero[]>([]);
-  const [barcos, setBarcos] = useState<Barco[]>([]);
-  const [fechasCrucero, setFechasCruceros] = useState<FechaCrucero[]>([]);
+  const [destinos, setDestinos] = useState<Destino[]>([]);
 
   // Estados para los filtros
   const [fechas, setFechas] = useState<[Date | null, Date | null]>([
@@ -46,23 +38,16 @@ export default function DocsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const data = await crucerosGet.getAll();
         const dataDestino = (await destinoService.getAll()).filter(
           (d) => d.nombre !== "Oceano",
         );
-        const dataCrucero = await cruceroService.getAll();
-        const dataBarco = await barcoService.getAll();
-        const dataFechas = (await fechaCruceroService.getAll()).filter(
-          (f) => new Date(f.fecha_inicio).getTime() >= Date.now(),
-        );
 
-        if (!dataCrucero || !dataBarco || !dataDestino || !dataFechas) {
+        if (!data || !dataDestino) {
           setError("Error al extraer la data");
         } else {
-          setCruceros(dataCrucero);
-          setBarcos(dataBarco);
+          setCruceros(data);
           setDestinos(dataDestino);
-          setFechasCruceros(dataFechas);
-          console.log(dataFechas);
         }
       } catch (err) {
         const errorMessage =
@@ -78,23 +63,22 @@ export default function DocsPage() {
   }, []);
 
   // Obtener la lista de días únicos de los cruceros
-  const diasUnicos = [
-    ...new Set(cruceros?.map((crucero) => crucero.cantidad_dias)),
-  ].sort((a, b) => a - b);
+  const diasUnicos = [...new Set(cruceros.map((crucero) => crucero.dias))].sort(
+    (a, b) => a - b,
+  );
 
   // Filtrar los cruceros según los controles seleccionados
   // Filtrar los cruceros según los controles seleccionados
-  const crucerosFiltrados = cruceros?.filter((crucero) => {
+  const crucerosFiltrados = cruceros.filter((crucero) => {
     const coincideTexto =
       searchText === "" ||
       crucero.nombre.toLowerCase().includes(searchText.toLowerCase());
 
     const coincideDestino =
       !destinoSeleccionado ||
-      crucero.id_destino === parseInt(destinoSeleccionado);
+      crucero.destino?.id === parseInt(destinoSeleccionado);
     const coincideDias =
-      !diasSeleccionados ||
-      crucero.cantidad_dias === parseInt(diasSeleccionados);
+      !diasSeleccionados || crucero.dias === parseInt(diasSeleccionados);
 
     return coincideTexto && coincideDias && coincideDestino;
   });
@@ -136,12 +120,12 @@ export default function DocsPage() {
             selectedKeys={destinoSeleccionado ? [destinoSeleccionado] : []}
             size="sm"
             variant="bordered"
-            onSelectionChange={(e) => setDestinoSeleccionado(e.currentKey)}
+            onSelectionChange={(e) =>
+              setDestinoSeleccionado(e.currentKey ? e.currentKey : "")
+            }
           >
             {destinos.map((d) => (
-              <SelectItem key={d.id_destino} value={d.id_destino}>
-                {d.nombre}
-              </SelectItem>
+              <SelectItem key={d.id}>{d.nombre}</SelectItem>
             ))}
           </Select>
           <Select
@@ -151,12 +135,12 @@ export default function DocsPage() {
             selectedKeys={diasSeleccionados ? [diasSeleccionados] : []}
             size="sm"
             variant="bordered"
-            onSelectionChange={(e) => setDiasSeleccionados(e.currentKey)}
+            onSelectionChange={(e) =>
+              setDiasSeleccionados(e.currentKey ? e.currentKey : "")
+            }
           >
             {diasUnicos.map((dias) => (
-              <SelectItem key={dias} value={dias}>
-                {dias.toString()}
-              </SelectItem>
+              <SelectItem key={dias}>{dias.toString()}</SelectItem>
             ))}
           </Select>
           <DateRangePicker
@@ -172,8 +156,8 @@ export default function DocsPage() {
           </button>
         </nav>
         <div className="contenido">
-          {crucerosFiltrados?.map((crucero) => (
-            <div key={crucero.id_crucero} className="card rounded-xl">
+          {crucerosFiltrados.map((crucero) => (
+            <div key={crucero.id} className="card rounded-xl">
               <div className="imagen">
                 <img
                   alt="Card background"
@@ -190,64 +174,51 @@ export default function DocsPage() {
                   <div className="info_1">
                     <p>
                       <i className="fi fi-rr-anchor" />{" "}
-                      {
-                        destinos.find(
-                          (d) => d.id_destino === crucero.id_destino,
-                        )?.nombre
-                      }
+                      {crucero.destino?.nombre}
                     </p>
                     <p>
-                      <i className="fi fi-rr-ship" />{" "}
-                      {
-                        barcos?.find(
-                          (barco) => barco.id_barco === crucero.id_barco,
-                        )?.nombre
-                      }
+                      <i className="fi fi-rr-ship" /> {crucero.barco?.nombre}
                     </p>
                   </div>
                   <div className="info_1">
                     <p>
                       <i className="fi fi-rr-sunrise" />{" "}
-                      {`${crucero.cantidad_dias} días`}
+                      {`${crucero.dias} días`}
                     </p>
                     <p>
                       <i className="fi fi-rr-moon" />{" "}
-                      {`${crucero.cantidad_dias - 1} noches`}
+                      {`${crucero.dias - 1} noches`}
                     </p>
                   </div>
                 </div>
                 <div className="fechasList">
-                  {fechasCrucero.filter(
-                    (f) => f.id_crucero === crucero.id_crucero,
-                  ) ? (
-                    fechasCrucero
-                      .filter((f) => f.id_crucero === crucero.id_crucero)
-                      .sort(
-                        (a, b) =>
-                          new Date(a.fecha_inicio).getTime() -
-                          new Date(b.fecha_inicio).getTime(),
-                      ) // Ordenar por la fecha más próxima
-                      .slice(0, 3) // Mostrar solo las primeras 3 fechas
-                      .map((fecha) => (
-                        <Chip
-                          key={fecha.id_fecha}
-                          className=""
-                          color="primary"
-                          size="sm"
-                          variant="dot"
-                        >
-                          {new Date(
-                            fecha.fecha_inicio + "T12:00:00Z",
-                          ).toLocaleDateString("en-MX", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </Chip>
-                      ))
-                  ) : (
-                    <Spinner color="primary" size="sm" />
-                  )}
+                  {crucero.fechas
+                    ?.filter(
+                      (f) => new Date(f.fecha_inicio).getTime() >= Date.now(),
+                    )
+                    .sort(
+                      (a, b) =>
+                        new Date(a.fecha_inicio).getTime() -
+                        new Date(b.fecha_inicio).getTime(),
+                    ) // Ordenar por la fecha más próxima
+                    .slice(0, 3) // Mostrar solo las primeras 3 fechas
+                    .map((fecha) => (
+                      <Chip
+                        key={fecha.id}
+                        className=""
+                        color="primary"
+                        size="sm"
+                        variant="dot"
+                      >
+                        {new Date(
+                          fecha.fecha_inicio + "T12:00:00Z",
+                        ).toLocaleDateString("en-MX", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </Chip>
+                    ))}
                 </div>
                 <Divider className="my-3" />
                 <div className="detalle_2">
@@ -257,7 +228,7 @@ export default function DocsPage() {
                       color="primary"
                       variant="solid"
                       onPress={() =>
-                        Navigate(`/cruceros/detalles/${crucero.id_crucero}`)
+                        Navigate(`/cruceros/detalles/${crucero.id}`)
                       }
                     >
                       Ver Detalles

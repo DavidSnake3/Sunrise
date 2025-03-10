@@ -11,6 +11,7 @@ class PrecioHabitacionResource extends JsonResource
         return [
             'id'         => $this->id_precio,
             'precio'     => $this->precio,
+            'cantidad'     => $this->cantidad_disponible,
             'habitacion' => new HabitacionResource($this->whenLoaded('habitacion')),
             'links'      => [
                 'self'  => url("/api/precios-habitaciones?id={$this->id_precio}"),

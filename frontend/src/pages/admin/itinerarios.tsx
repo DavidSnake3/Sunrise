@@ -3,17 +3,17 @@ import { Button } from "@heroui/react";
 
 import { DataTable } from "@/components/common/DataTable";
 import { useAuth } from "@/contexts/AuthContext";
-import { Itinerario, itinerarioService } from "@/api/itinerario";
 import useFetchData from "@/hooks/useFetchData";
 
 import LoadingScreen from "@/components/loading";
+import { crucerosGet, Itinerario } from "@/api/cruceros";
 
 const ItinerariosPage = () => {
   const { id_crucero } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data, loading, error } = useFetchData<Itinerario[]>(() =>
-    itinerarioService.getByCrucero(Number(id_crucero)),
+    crucerosGet.getItinerarios(Number(id_crucero)),
   );
 
   const columns = [

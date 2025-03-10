@@ -11,6 +11,7 @@ class CruceroResource extends JsonResource
         return [
             'id'           => $this->id_crucero,
             'nombre'       => $this->nombre,
+            'dias'         => $this->cantidad_dias,
             'descripcion'  => $this->descripcion,
             'foto'         => $this->foto,
             'itinerarios'  => ItinerarioResource::collection($this->whenLoaded('itinerarios')),

@@ -1,9 +1,11 @@
 // src/api/puertos.ts
+import axios from "axios";
 import { handleResponse } from "./auth";
+import { Destino } from "./destinos";
 
 export interface Puerto {
-  id_puerto: number;
-  id_destino: number;
+  id: number;
+  destino?: Destino;
   nombre: string;
   pais: string;
   foto: string;
@@ -12,21 +14,23 @@ export interface Puerto {
 const API_URL = "http://localhost:8000/api";
 
 export const puertoService = {
-  async getByBarco(barcoId: number): Promise<Puerto[]> {
-    const response = await fetch(`${API_URL}/puertos/por-barco/${barcoId}`);
+  async getById(id: number): Promise<Puerto[]> {
+    const response = await axios.get(`${API_URL}/puertos?id=${id}`);
 
-    return handleResponse<Puerto[]>(response);
+    return response.data.data;
   },
 
   async getByDestino(destinoId: number): Promise<Puerto[]> {
-    const response = await fetch(`${API_URL}/puertos/por-destino/${destinoId}`);
+    const response = await axios.get(
+      `${API_URL}/puertos?destino_id=${destinoId}`,
+    );
 
-    return handleResponse<Puerto[]>(response);
+    return response.data.data;
   },
 
   async getAll(): Promise<Puerto[]> {
-    const response = await fetch(`${API_URL}/puertos`);
+    const response = await axios.get(`${API_URL}/puertos`);
 
-    return handleResponse<Puerto[]>(response);
+    return response.data.data;
   },
 };

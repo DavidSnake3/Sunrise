@@ -43,7 +43,7 @@ Route::middleware(['auth:api'])->group(function() {
     
 });
 
-Route::get('/usuarios', [UserController::class, 'index']);
+Route::get('usuarios', [UserController::class, 'index']);
 
 
 //Destinos
@@ -60,7 +60,7 @@ Route::get('detalle_habitacion', [BarcoController::class, 'getDetalleHabitacion'
 Route::get('cruceros', [CruceroController::class, 'getAll']);
 Route::get('itinerarios', [CruceroController::class, 'getItinerariosByCrucero']);
 Route::get('fechas', [CruceroController::class, 'getFechasByCrucero']);
-Route::get('precios-habitaciones', [CruceroController::class, 'getPreciosByFecha']);
+Route::get('precios_habitaciones', [CruceroController::class, 'getPreciosByFecha']);
 Route::get('crucero_complementos', [CruceroController::class, 'getComplementosByCrucero']);
 
 // Complementos generales
@@ -69,13 +69,13 @@ Route::get('complemento', [ComplementoController::class, 'getById']);
 
 
 // Reservas principales
-Route::get('/reservas', [ReservaController::class, 'getAll']);
+Route::get('reservas', [ReservaController::class, 'getAll']);
 
 // Sub-entidades con filtros por parámetros
-Route::get('/huespedes', [HuespedController::class, 'getAll']);
-Route::get('/detalles-reserva', [DetalleReservaController::class, 'getAll']);
-Route::get('/reserva-habitaciones', [ReservaHabitacionController::class, 'getAll']);
-Route::get('/registros-factura', [FacturaController::class, 'getRegistros']);
+Route::get('huespedes', [HuespedController::class, 'getAll']);
+Route::get('detalles_reserva', [DetalleReservaController::class, 'getAll']);
+Route::get('reserva_habitaciones', [ReservaHabitacionController::class, 'getAll']);
+Route::get('registros_factura', [FacturaController::class, 'getRegistros']);
 
 
 

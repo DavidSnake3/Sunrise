@@ -1,24 +1,25 @@
-import { handleResponse } from "./auth";
+import axios from "axios";
+import { Puerto } from "./puertos";
 
 export interface Destino {
-  id_destino: number;
+  id: number;
   nombre: string;
   foto: string;
-  pais: string;
+  puertos?: Puerto[];
 }
 
 const API_URL = "http://localhost:8000/api";
 
 export const destinoService = {
   async getAll(): Promise<Destino[]> {
-    const response = await fetch(`${API_URL}/destinos`);
+    const response = await axios.get(`${API_URL}/destinos`);
 
-    return handleResponse<Destino[]>(response);
+    return response.data.data;
   },
 
-  async getPuertos(destinoId: number): Promise<any[]> {
-    const response = await fetch(`${API_URL}/destinos/${destinoId}/puertos`);
+  async getById(id: number): Promise<Destino> {
+    const response = await axios.get(`${API_URL}/destinos?id=${id}`);
 
-    return handleResponse(response);
+    return response.data.data;
   },
 };

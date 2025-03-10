@@ -1,58 +1,53 @@
 // src/api/cruceros.ts
+import axios from "axios";
 import { handleResponse } from "./auth";
+import { Barco } from "./barcos";
+import { Destino } from "./destinos";
+import { FechaCrucero } from "./fechaCrucero";
+import { Puerto } from "./puertos";
 
 export interface Crucero {
-  id_crucero: number;
+  id: number;
   nombre: string;
   foto: string;
-  cantidad_dias: number;
-  id_barco: number;
-  id_destino: number;
+  dias: number;
+  descripcion: string;
+  itinerarios?: Itinerario[];
+  barco?: Barco;
+  destino?: Destino;
+  fechas?: FechaCrucero[];
+  complementos?: any[];
 }
 
-export interface FechaCrucero {
-  id_fecha: number;
-  id_crucero: number;
-  fecha_inicio: string;
-  fecha_limite_pago: string;
+export interface Itinerario {
+  id: number;
+  dia: number;
+  puerto?: Puerto;
+  descripcion: string;
+  llegada: string;
+  salida: string;
 }
 
 const API_URL = "http://localhost:8000/api";
 
-export const cruceroService = {
+export const crucerosGet = {
   async getAll(): Promise<Crucero[]> {
-    const response = await fetch(`${API_URL}/cruceros`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    const response = await axios.get(`${API_URL}/cruceros`);
 
-    return handleResponse<Crucero[]>(response);
+    return response.data.data;
   },
 
-  async getItinerarios(id_crucero: number): Promise<any[]> {
-    const response = await fetch(`${API_URL}/itinerarios/${id_crucero}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    });
+  async getById(id: number): Promise<Crucero> {
+    const response = await axios.get(`${API_URL}/cruceros?id=${id}`);
 
-    return handleResponse(response);
-  },
-};
-
-export const fechaCruceroService = {
-  async getAll(): Promise<FechaCrucero[]> {
-    const response = await fetch(`${API_URL}/fechas-crucero`);
-
-    return handleResponse(response);
+    return response.data.data;
   },
 
-  getByCrucero: async (id_crucero: number): Promise<FechaCrucero[]> => {
-    const response = await fetch(`${API_URL}/fechas-crucero/${id_crucero}`);
+  async getItinerarios(id_crucero: number): Promise<Itinerario[]> {
+    const response = await axios.get(
+      `${API_URL}/itinerarios?crucero_id=${id_crucero}`,
+    );
 
-    return handleResponse(response);
+    return response.data.data;
   },
 };

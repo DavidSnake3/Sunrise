@@ -1,9 +1,8 @@
 // src/pages/admin/cruceros.tsx
-import { Button, Image } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 
-import { cruceroService, Crucero } from "../../api/cruceros";
-import { DataTable } from "../../components/common/DataTable";
+import { crucerosGet, Crucero } from "../../api/cruceros";
 import { useAuth } from "../../contexts/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
 
@@ -13,10 +12,10 @@ const CrucerosPage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const {
-    data: cruceros,
+    data: crucero,
     loading,
     error,
-  } = useFetchData<Crucero[]>(cruceroService.getAll);
+  } = useFetchData<Crucero[]>(crucerosGet.getAll);
 
   const columns = [
     { uid: "id_crucero", name: "ID", sortable: true },
@@ -29,16 +28,8 @@ const CrucerosPage = () => {
 
   const renderCell = (crucero: Crucero, columnKey: keyof Crucero) => {
     switch (columnKey) {
-      case "foto":
-        return (
-          <Image
-            alt={crucero.nombre}
-            className="w-20 h-20 object-cover rounded"
-            src={`http://localhost:8000/imagenes/cruceros/${crucero.foto}`}
-          />
-        );
-      case "cantidad_dias": // Nuevo caso
-        return `${crucero.cantidad_dias} días`;
+      case "dias": // Nuevo caso
+        return `${crucero.dias} días`;
 
       case "actions":
         return (
@@ -53,7 +44,7 @@ const CrucerosPage = () => {
               color="success"
               size="sm"
               onClick={() =>
-                navigate(`/admin/cruceros/itinerarios/${crucero.id_crucero}`)
+                navigate(`/admin/cruceros/itinerarios/${crucero.id}`)
               }
             >
               Itinerarios
@@ -62,9 +53,7 @@ const CrucerosPage = () => {
             <Button
               color="warning"
               size="sm"
-              onClick={() =>
-                navigate(`/admin/cruceros/fechas/${crucero.id_crucero}`)
-              }
+              onClick={() => navigate(`/admin/cruceros/fechas/${crucero.id}`)}
             >
               Fechas
             </Button>
@@ -90,7 +79,7 @@ const CrucerosPage = () => {
 
   return (
     <div className="divAdmin">
-      <DataTable<Crucero>
+      {/* <DataTable<Crucero>
         addButtonLabel="Nuevo Crucero"
         columns={columns}
         data={cruceros || []}
@@ -101,11 +90,11 @@ const CrucerosPage = () => {
           "id_barco",
           "actions",
         ]}
-        renderCell={renderCell}
-        rowKey="id_crucero"
+        // renderCell={renderCell}
+        rowKey="id"
         searchPlaceholder="Buscar crucero..."
         nombre="Gestion de Cruceros"
-      />
+      /> */}
     </div>
   );
 };
