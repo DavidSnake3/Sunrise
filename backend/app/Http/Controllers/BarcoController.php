@@ -29,7 +29,7 @@ class BarcoController extends Controller
     
     public function getById($id)
     {
-        $barco = Barco::with('habitaciones')->findOrFail($id);
+        $barco = Barco::with('habitaciones.detallesHabitacion')->findOrFail($id);
         return new BarcoResource($barco);
     }
 
