@@ -7,10 +7,10 @@ import {
   TableRow,
   TableCell,
   Input,
-  Button,
   Pagination,
   SortDescriptor,
 } from "@heroui/react";
+import { Key } from "@react-types/shared";
 
 interface DataTableProps<T> {
   columns: Column[];
@@ -20,8 +20,11 @@ interface DataTableProps<T> {
   searchPlaceholder?: string;
   nombre?: string;
   initialVisibleColumns?: string[];
-  addButtonLabel?: string;
-  onAdd?: () => void;
+  selectionMode?: "single" | "multiple";
+  selectedKeys?: Set<Key> | "all";
+  onSelectionChange?: (keys: Set<Key> | "all") => void;
+  topRightContent?: React.ReactNode;
+  topContent?: React.ReactNode; // nuevo prop para contenido superior personalizado
 }
 
 interface Column {
@@ -37,9 +40,12 @@ export const DataTable = <T extends Record<string, any>>({
   rowKey,
   searchPlaceholder = "Search...",
   initialVisibleColumns,
-  addButtonLabel,
   nombre = "",
-  onAdd,
+  selectionMode,
+  selectedKeys,
+  onSelectionChange,
+  topRightContent,
+  topContent,
 }: DataTableProps<T>) => {
   const [filterValue, setFilterValue] = React.useState("");
   const [visibleColumns] = React.useState<Set<string>>(
@@ -91,6 +97,46 @@ export const DataTable = <T extends Record<string, any>>({
 
   const onClear = () => setFilterValue("");
 
+  // Contenido por defecto si no se pasa topContent personalizado
+  const defaultTopContent = (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-5">
+        <h1 className="text-2xl font-bold">{nombre}</h1>
+        <Input
+          isClearable
+          className="w-full sm:max-w-[44%]"
+          placeholder={searchPlaceholder}
+          startContent={<i className="fi fi-rr-search" />}
+          value={filterValue}
+          onClear={onClear}
+          onValueChange={onSearchChange}
+        />
+      </div>
+      <div className="flex justify-between items-center">
+        <span className="text-default-400 text-small">
+          Total {data.length} registros
+        </span>
+        <div className="flex items-center gap-2">
+          <label className="flex items-center text-default-400 text-small">
+            Filas por página:
+            <select
+              className="bg-transparent outline-none text-default-400 text-small"
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setPage(1);
+              }}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+          </label>
+          {topRightContent}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <Table
       isHeaderSticky
@@ -109,54 +155,18 @@ export const DataTable = <T extends Record<string, any>>({
         </div>
       }
       classNames={{ wrapper: "" }}
+      selectedKeys={selectedKeys}
+      selectionMode={selectionMode}
       sortDescriptor={sortDescriptor}
-      topContent={
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-5">
-            <h1 className="text-2xl font-bold">{nombre}</h1>
-            <Input
-              isClearable
-              className="w-full sm:max-w-[44%]"
-              placeholder={searchPlaceholder}
-              startContent={<i className="fi fi-rr-search" />}
-              value={filterValue}
-              onClear={onClear}
-              onValueChange={onSearchChange}
-            />
-            {onAdd && (
-              <Button color="primary" onPress={onAdd}>
-                {addButtonLabel}
-              </Button>
-            )}
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-default-400 text-small">
-              Total {data.length} registros
-            </span>
-            <label className="flex items-center text-default-400 text-small">
-              Filas por página:
-              <select
-                className="bg-transparent outline-none text-default-400 text-small"
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  setPage(1);
-                }}
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-              </select>
-            </label>
-          </div>
-        </div>
-      }
+      topContent={topContent || defaultTopContent}
+      onSelectionChange={onSelectionChange}
       onSortChange={setSortDescriptor}
     >
       <TableHeader columns={headerColumns}>
         {(column) => (
           <TableColumn
             key={column.uid}
-            align={"center"}
+            align="center"
             allowsSorting={column.sortable}
           >
             {column.name}

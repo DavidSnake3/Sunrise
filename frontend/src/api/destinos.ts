@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { Puerto } from "./puertos";
 
 export interface Destino {
@@ -21,5 +22,22 @@ export const destinoService = {
     const response = await axios.get(`${API_URL}/destinos?id=${id}`);
 
     return response.data.data;
+  },
+  async store(destino: { nombre: string; foto: string }): Promise<Destino> {
+    const response = await axios.post(`${API_URL}/destinos`, destino);
+
+    return response.data.data;
+  },
+
+  async update(id: number, destino: Partial<Destino>): Promise<Destino> {
+    const response = await axios.patch(`${API_URL}/destinos/${id}`, destino);
+
+    return response.data.data;
+  },
+
+  async deactivate(id: number): Promise<{ message: string }> {
+    const response = await axios.delete(`${API_URL}/destinos/${id}`);
+
+    return response.data;
   },
 };

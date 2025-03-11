@@ -49,6 +49,11 @@ Route::get('usuarios', [UserController::class, 'index']);
 //Destinos
 Route::get('destinos', [DestinoController::class, 'getAll']);
 Route::get('puertos', [DestinoController::class, 'getAllPuertos']);
+Route::post('destinos/', [DestinoController::class, 'store']);
+Route::patch('destinos/{id}', [DestinoController::class, 'update']);
+Route::delete('destinos/{id}', [DestinoController::class, 'deactivate']);
+
+
 
 
 //Barcos e habitaciones

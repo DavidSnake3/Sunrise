@@ -28,7 +28,7 @@ const CrucerosPage = () => {
 
   const renderCell = (crucero: Crucero, columnKey: keyof Crucero) => {
     switch (columnKey) {
-      case "dias": // Nuevo caso
+      case "dias":
         return `${crucero.dias} días`;
 
       case "actions":
