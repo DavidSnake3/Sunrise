@@ -52,7 +52,6 @@ class CruceroController extends Controller
         return new CruceroResource($crucero);
     }
 
-    // Itinerario: Obtener todos los itinerarios de un crucero (con datos del puerto)
     public function getItinerariosByCrucero(Request $request)
     {
         $request->validate([
@@ -66,24 +65,22 @@ class CruceroController extends Controller
         return ItinerarioResource::collection($itinerarios);
     }
 
-    // Fechas: Obtener todas las fechas de un crucero (donde fecha >= hoy) con sus precios de habitaciones
     public function getFechasByCrucero(Request $request)
     {
         $request->validate([
             'crucero_id' => 'required|integer|min:1'
         ]);
     
-        $today = Carbon::today()->toDateString();
+        $today = Carbon::today();
     
         $fechas = FechasCrucero::with('preciosHabitaciones')
             ->where('id_crucero', $request->crucero_id)
-            ->where('fecha_inicio', '>=', $today) // Se usa fecha_inicio
+            ->whereDate('fecha_inicio', '>=', $today)
             ->get();
     
         return FechaResource::collection($fechas);
     }
 
-    // PreciosHabitaciones: Obtener precios de habitaciones por fecha
     public function getPreciosByFecha(Request $request)
     {
         $request->validate([
@@ -97,7 +94,6 @@ class CruceroController extends Controller
         return PrecioHabitacionResource::collection($precios);
     }
 
-    // Crucero_Complementos: Obtener todos los complementos asociados a un crucero
     public function getComplementosByCrucero(Request $request)
     {
         $request->validate([

@@ -28,7 +28,7 @@ class DestinoController extends Controller
             $query->where('desactivado', 0);
         }
 
-        $destinos = Destino::with('puertos')->get();
+        $destinos = $query->get();
         return DestinoResource::collection($destinos);
     }
     
@@ -38,9 +38,6 @@ class DestinoController extends Controller
         return new DestinoResource($destino);
     }
 
-    // Para puertos:
-    // ?id=... retorna el detalle de un puerto
-    // ?destino_id=... retorna todos los puertos de ese destino
     public function getAllPuertos(Request $request)
     {
         $request->validate([
@@ -48,19 +45,16 @@ class DestinoController extends Controller
             'destino_id' => 'sometimes|integer|min:1'
         ]);
 
-        // Detalle de un puerto en específico
         if ($request->has('id')) {
             $puerto = Puerto::with('destino')->find($request->id);
             return $puerto ? new PuertoResource($puerto) : response()->json(['error' => 'No encontrado'], 404);
         }
 
-        // Todos los puertos de un destino
         if ($request->has('destino_id')) {
             $puertos = Puerto::where('id_destino', $request->destino_id)->get();
             return PuertoResource::collection($puertos);
         }
 
-        // Sin parámetros: retorna todos los puertos
         return PuertoResource::collection(Puerto::all());
     }
 

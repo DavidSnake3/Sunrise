@@ -49,17 +49,20 @@ Route::get('usuarios', [UserController::class, 'index']);
 //Destinos
 Route::get('destinos', [DestinoController::class, 'getAll']);
 Route::get('puertos', [DestinoController::class, 'getAllPuertos']);
+//Crud
 Route::post('destinos/', [DestinoController::class, 'store']);
 Route::patch('destinos/{id}', [DestinoController::class, 'update']);
 Route::delete('destinos/{id}', [DestinoController::class, 'deactivate']);
-
-
-
 
 //Barcos e habitaciones
 Route::get('barcos', [BarcoController::class, 'getAll']);
 Route::get('habitaciones', [BarcoController::class, 'getAllHabitaciones']);
 Route::get('detalle_habitacion', [BarcoController::class, 'getDetalleHabitacion']);
+Route::get('/barcos/{idBarco}/fotos', [BarcoController::class, 'getFotos']);
+//Crud
+Route::post('barcos', [BarcoController::class, 'store']);
+Route::patch('barcos/{id}', [BarcoController::class,'update']);
+Route::delete('barcos/{id}', [BarcoController::class, 'desactivate']);
 
 // Crucero y relaciones
 Route::get('cruceros', [CruceroController::class, 'getAll']);
@@ -71,7 +74,6 @@ Route::get('crucero_complementos', [CruceroController::class, 'getComplementosBy
 // Complementos generales
 Route::get('complementos', [ComplementoController::class, 'getAll']);
 Route::get('complemento', [ComplementoController::class, 'getById']);
-
 
 // Reservas principales
 Route::get('reservas', [ReservaController::class, 'getAll']);
