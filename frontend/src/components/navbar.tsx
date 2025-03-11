@@ -23,8 +23,6 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Avatar,
-  User,
 } from "@heroui/react";
 
 import { useAuth } from "../contexts/AuthContext";
@@ -147,8 +145,8 @@ export const Navbar = () => {
                 </DropdownTrigger>
                 <DropdownMenu
                   aria-label="User Actions"
-                  variant="flat"
                   disabledKeys={["user"]}
+                  variant="flat"
                 >
                   <DropdownItem key="user" className="lg:hidden">
                     <p className="font-bold">
@@ -178,7 +176,6 @@ export const Navbar = () => {
               </NavbarItem>
               <NavbarItem>
                 <Button
-                  as={RouterLink}
                   className="login text-secondary-foreground hidden lg:flex"
                   color="primary"
                   href="#"

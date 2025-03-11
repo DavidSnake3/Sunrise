@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Table,
   TableHeader,
@@ -7,6 +7,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Divider,
+  Chip,
 } from "@heroui/react";
 
 import { crucerosGet, Crucero } from "../api/cruceros";
@@ -17,6 +19,7 @@ import LoadingScreen from "@/components/loading";
 import "../styles/detallesCrucero.css";
 
 export default function DocsPage() {
+  const navigate = useNavigate();
   const [index, setIndex] = useState(1);
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
@@ -43,6 +46,28 @@ export default function DocsPage() {
     fetchData();
   }, [id]);
 
+  const obtenerPrecioMasBajo = () => {
+    const precioMasBajoCrucero = crucero?.fechas
+      ?.filter((f) => new Date(f.fecha_inicio).getTime() >= Date.now())
+      .reduce((precioMinimo, fecha) => {
+        const precios = fecha.precios_habitaciones?.map(
+          (habitacion) => habitacion.precio,
+        );
+
+        if (precios && precios.length > 0) {
+          const precioMinimoFecha = Math.min(...precios);
+
+          return precioMinimoFecha < precioMinimo
+            ? precioMinimoFecha
+            : precioMinimo;
+        }
+
+        return precioMinimo;
+      }, Infinity);
+
+    return precioMasBajoCrucero;
+  };
+
   if (loading)
     return (
       <div className="h-[calc(100vh-60px)] w-[100%]">
@@ -56,26 +81,70 @@ export default function DocsPage() {
     <DefaultLayout>
       <section className="flex-grow min-h-[calc(100vh-108px)] crucero_detalle">
         <header className="header">
-          <img
-            alt=""
-            src={`http://localhost:8000/imagenes/cruceros/${crucero?.foto}`}
-          />
+          <p className="atras" onClick={() => navigate(-1)}>{`<- Atras`}</p>
+          <img alt="" src={`/${crucero?.foto}`} />
           <div className="header_detalle">
             <h1 className="name">{crucero?.nombre}</h1>
             <div className="detalle_contenido">
-              <p>
-                <i className="fi fi-rr-ship" /> {crucero?.barco?.nombre}
-              </p>
-              <p>
-                <i className="fi fi-rr-anchor" /> {crucero?.destino?.nombre}
-              </p>
-              <p>
-                <i className="fi fi-rr-sunrise" /> {`${crucero?.dias} días`}
-              </p>
-              <p>
-                <i className="fi fi-rr-moon" />{" "}
-                {`${crucero?.dias ? crucero.dias - 1 : ""} noches`}
-              </p>
+              <div className="info">
+                <div>
+                  <p>
+                    <i className="fi fi-rr-ship" /> {crucero?.barco?.nombre}
+                  </p>
+                  <p>
+                    <i className="fi fi-rr-anchor" /> {crucero?.destino?.nombre}
+                  </p>
+                  <p>
+                    <i className="fi fi-rr-sunrise" /> {`${crucero?.dias} días`}
+                  </p>
+                  <p>
+                    <i className="fi fi-rr-moon" />{" "}
+                    {`${crucero?.dias ? crucero.dias - 1 : ""} noches`}
+                  </p>
+                </div>
+                <Divider className="my-2" />
+                <div className="precios">
+                  <p className="text text-gray-500">Precios desde:</p>
+                  <p className="precio">₡{obtenerPrecioMasBajo()}</p>
+                </div>
+              </div>
+              <Divider className="hidden sm:flex" orientation="vertical" />
+              <Divider className="sm:hidden" />
+              <div className="complementos">
+                <p>Complementos</p>
+                <div>
+                  {crucero?.complementos?.map((c) => (
+                    <Chip
+                      key={c.id}
+                      className="m-1"
+                      color="primary"
+                      size="sm"
+                      variant="bordered"
+                    >
+                      {c.nombre}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <Divider className="mx-5" />
+            <div className="puertos">
+              <p>Puertos:</p>
+              <div>
+                {crucero?.itinerarios
+                  ?.filter((i) => i.puerto?.nombre !== "Navegando")
+                  .map((i) => (
+                    <Chip
+                      key={i.id}
+                      className="m-1"
+                      color="primary"
+                      size="sm"
+                      variant="dot"
+                    >
+                      {i.puerto?.nombre}
+                    </Chip>
+                  ))}
+              </div>
             </div>
           </div>
         </header>
@@ -146,7 +215,7 @@ export default function DocsPage() {
 
 const IndexSalida = ({ crucero }: { crucero: Crucero | null }) => {
   return (
-    <div>
+    <div className="h-full">
       {crucero?.fechas
         ?.filter((f) => new Date(f.fecha_inicio).getTime() >= Date.now())
         .map((f) => {

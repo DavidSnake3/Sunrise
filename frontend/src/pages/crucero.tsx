@@ -11,13 +11,13 @@ import {
   Input,
   Divider,
   Button,
-  DateRangePicker,
   Select,
   SelectItem,
   Chip,
 } from "@heroui/react";
 
 import { Destino, destinoService } from "@/api/destinos";
+import MonthPicker from "@/components/common/MonthPicker";
 
 export default function DocsPage() {
   const Navigate = useNavigate();
@@ -28,10 +28,7 @@ export default function DocsPage() {
   const [destinos, setDestinos] = useState<Destino[]>([]);
 
   // Estados para los filtros
-  const [fechas, setFechas] = useState<[Date | null, Date | null]>([
-    null,
-    null,
-  ]);
+  const [fechas, setFechas] = useState<string | null>("");
   const [destinoSeleccionado, setDestinoSeleccionado] = useState("");
   const [diasSeleccionados, setDiasSeleccionados] = useState("");
 
@@ -68,8 +65,15 @@ export default function DocsPage() {
   );
 
   // Filtrar los cruceros según los controles seleccionados
-  // Filtrar los cruceros según los controles seleccionados
   const crucerosFiltrados = cruceros.filter((crucero) => {
+    const coincideFecha = crucero.fechas?.some((f) => {
+      return (
+        (f.fecha_inicio.slice(0, 7) === fechas &&
+          new Date(f.fecha_inicio).getTime() >= Date.now()) ||
+        fechas === ""
+      );
+    });
+
     const coincideTexto =
       searchText === "" ||
       crucero.nombre.toLowerCase().includes(searchText.toLowerCase());
@@ -80,13 +84,33 @@ export default function DocsPage() {
     const coincideDias =
       !diasSeleccionados || crucero.dias === parseInt(diasSeleccionados);
 
-    return coincideTexto && coincideDias && coincideDestino;
+    return coincideTexto && coincideDias && coincideDestino && coincideFecha;
   });
 
-  const clear = () => {
-    setFechas([null, null]); // Restablecer las fechas
-    setDestinoSeleccionado(""); // Restablecer el destino seleccionado
-    setDiasSeleccionados(""); // Restablecer los días seleccionados
+  const obtenerPrecioMasBajo = (crucero: Crucero) => {
+    const precioMasBajoCrucero = crucero?.fechas
+      ?.filter((f) =>
+        !fechas
+          ? new Date(f.fecha_inicio).getTime() >= Date.now()
+          : f.fecha_inicio.slice(0, 7) === fechas,
+      )
+      .reduce((precioMinimo, fecha) => {
+        const precios = fecha.precios_habitaciones?.map(
+          (habitacion) => habitacion.precio,
+        );
+
+        if (precios && precios.length > 0) {
+          const precioMinimoFecha = Math.min(...precios);
+
+          return precioMinimoFecha < precioMinimo
+            ? precioMinimoFecha
+            : precioMinimo;
+        }
+
+        return precioMinimo;
+      }, Infinity);
+
+    return precioMasBajoCrucero;
   };
 
   if (loading)
@@ -103,7 +127,7 @@ export default function DocsPage() {
       <section className="flex-grow min-h-[calc(100vh-110px)] crucero">
         <nav className="nav">
           <Input
-            className="buscar text-primary bg-background"
+            className="buscar bg-background"
             color="primary"
             placeholder="Buscar cruceros"
             size="md"
@@ -113,47 +137,42 @@ export default function DocsPage() {
             variant="bordered"
             onChange={(e) => setSearchText(e.target.value)}
           />
-          <Select
-            className="destino bg-background"
-            color="primary"
-            label="Destinos"
-            selectedKeys={destinoSeleccionado ? [destinoSeleccionado] : []}
-            size="sm"
-            variant="bordered"
-            onSelectionChange={(e) =>
-              setDestinoSeleccionado(e.currentKey ? e.currentKey : "")
-            }
-          >
-            {destinos.map((d) => (
-              <SelectItem key={d.id}>{d.nombre}</SelectItem>
-            ))}
-          </Select>
-          <Select
-            className="dias bg-background"
-            color="primary"
-            label="Días"
-            selectedKeys={diasSeleccionados ? [diasSeleccionados] : []}
-            size="sm"
-            variant="bordered"
-            onSelectionChange={(e) =>
-              setDiasSeleccionados(e.currentKey ? e.currentKey : "")
-            }
-          >
-            {diasUnicos.map((dias) => (
-              <SelectItem key={dias}>{dias.toString()}</SelectItem>
-            ))}
-          </Select>
-          <DateRangePicker
-            className="fechas bg-background"
-            color="primary"
-            label="Fechas"
-            value={fechas}
-            variant="bordered"
-            onChange={setFechas}
-          />
-          <button className="clean" onClick={() => clear()}>
-            <i className="fi fi-rr-broom" />
-          </button>
+          <div className="navFiltros">
+            <Select
+              className="destino bg-background"
+              color="primary"
+              label="Destinos"
+              selectedKeys={destinoSeleccionado ? [destinoSeleccionado] : []}
+              size="sm"
+              variant="bordered"
+              onSelectionChange={(e) =>
+                setDestinoSeleccionado(e.currentKey ? e.currentKey : "")
+              }
+            >
+              {destinos.map((d) => (
+                <SelectItem key={d.id}>{d.nombre}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              className="dias bg-background"
+              color="primary"
+              label="Días"
+              selectedKeys={diasSeleccionados ? [diasSeleccionados] : []}
+              size="sm"
+              variant="bordered"
+              onSelectionChange={(e) =>
+                setDiasSeleccionados(e.currentKey ? e.currentKey : "")
+              }
+            >
+              {diasUnicos.map((dias) => (
+                <SelectItem key={dias}>{dias.toString()}</SelectItem>
+              ))}
+            </Select>
+            <MonthPicker
+              className="fechas w-[350px] h-12 text-primary"
+              onChange={setFechas}
+            />
+          </div>
         </nav>
         <div className="contenido">
           {crucerosFiltrados.map((crucero) => (
@@ -162,7 +181,7 @@ export default function DocsPage() {
                 <img
                   alt="Card background"
                   className="object-cover"
-                  src={`http://localhost:8000/imagenes/cruceros/${crucero.foto}`}
+                  src={`/${crucero.foto}`}
                   width={270}
                 />
               </div>
@@ -193,8 +212,10 @@ export default function DocsPage() {
                 </div>
                 <div className="fechasList">
                   {crucero.fechas
-                    ?.filter(
-                      (f) => new Date(f.fecha_inicio).getTime() >= Date.now(),
+                    ?.filter((f) =>
+                      !fechas
+                        ? new Date(f.fecha_inicio).getTime() >= Date.now()
+                        : f.fecha_inicio.slice(0, 7) === fechas,
                     )
                     .sort(
                       (a, b) =>
@@ -222,9 +243,13 @@ export default function DocsPage() {
                 </div>
                 <Divider className="my-3" />
                 <div className="detalle_2">
-                  <div className="precios" />
+                  <div className="precios">
+                    <p className="text text-gray-500">Precios desde:</p>
+                    <h1 className="precio">₡{obtenerPrecioMasBajo(crucero)}</h1>
+                  </div>
                   <div className="mas">
                     <Button
+                    className="w-full"
                       color="primary"
                       variant="solid"
                       onPress={() =>

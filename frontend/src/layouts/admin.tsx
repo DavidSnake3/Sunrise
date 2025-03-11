@@ -17,6 +17,7 @@ import HabitacionesPage from "@/pages/admin/habitaciones";
 import ItinerariosPage from "@/pages/admin/itinerarios";
 import DetallesHabitacionPage from "@/pages/admin/detallesHabitacion";
 import PreciosHabitacionPage from "@/pages/admin/preciosHabitacion";
+import Pruebas from "@/pages/admin/pruebas";
 
 export default function DefaultLayout() {
   const [select, setSelct] = useState(0);
@@ -102,6 +103,7 @@ export default function DefaultLayout() {
               <Route element={<Cruceros />} path="cruceros/*" />
               <Route element={<Reservas />} path="reservas/*" />
               <Route element={<Usuarios />} path="usuarios/*" />
+              <Route element={<Pruebas />} path="prueba/*" />
               <Route
                 element={<PuertosPage />}
                 path="destinos/puertos/:id_destino"
