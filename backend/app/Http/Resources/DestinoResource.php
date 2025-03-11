@@ -13,6 +13,7 @@ class DestinoResource extends JsonResource
             'id' => $this->id_destino,
             'nombre' => $this->nombre,
             'foto' => $this->foto,
+            'desactivado'=> $this->desactivado,
             'puertos' => PuertoResource::collection($this->whenLoaded('puertos')),
             'links' => [
                 'self' => url("/api/destinos?id={$this->id_destino}"),

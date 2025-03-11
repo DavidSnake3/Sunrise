@@ -16,7 +16,8 @@ class Destino extends Model
 
     protected $fillable = [
         'nombre', 
-        'foto'
+        'foto',
+        'desactivado' 
     ];
 
     public function puertos() {
