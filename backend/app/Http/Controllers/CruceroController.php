@@ -32,7 +32,7 @@ class CruceroController extends Controller
             'itinerarios.puerto', 
             'barco', 
             'destino', 
-            'fechas', 
+            'fechas.preciosHabitaciones', 
             'complementos'
         ])->get();
 
@@ -75,7 +75,7 @@ class CruceroController extends Controller
     
         $today = Carbon::today()->toDateString();
     
-        $fechas = FechasCrucero::with('preciosHabitaciones.habitacion')
+        $fechas = FechasCrucero::with('preciosHabitaciones')
             ->where('id_crucero', $request->crucero_id)
             ->where('fecha_inicio', '>=', $today) // Se usa fecha_inicio
             ->get();
@@ -90,7 +90,7 @@ class CruceroController extends Controller
             'fecha_id' => 'required|integer|min:1'
         ]);
 
-        $precios = PreciosHabitacion::with('habitacion')
+        $precios = PreciosHabitacion::with('preciosHabitaciones')
             ->where('id_fecha', $request->fecha_id)
             ->get();
 

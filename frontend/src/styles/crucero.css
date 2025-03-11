@@ -2,38 +2,58 @@
   background-color: #f05235;
   display: flex;
   flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
-  gap: 15px;
-  padding: 5px 20px 5px;
+  justify-content: space-between;
+  padding: 10px;
   max-height: none;
-  .buscar {
-    max-width: 400px;
-    min-width: 200px;
-    border-radius: 8px;
-  }
-  .fechas {
-    max-width: 250px;
-    min-width: 200px;
-    border-radius: 8px;
-  }
-  .destino {
-    max-width: 200px;
-    min-width: 200px;
-    border-radius: 8px;
-  }
-  .dias {
-    max-width: 80px;
-    border-radius: 8px;
-  }
-  .clean {
-    i {
-      font-size: 30px;
-      color: white;
-    }
-    i:hover {
-      color: rgb(197, 197, 197);
-    }
-  }
+}
+
+.crucero .nav .buscar {
+  flex: 1;
+  max-width: 400px;
+  width: 100%;
+  min-width: 200px;
+  border-radius: 8px;
+}
+
+.crucero .nav .navFiltros {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  width: 100%;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.crucero .nav .navFiltros .fechas {
+  position: relative;
+  z-index: 2;
+  background-color: white;
+  border-radius: 5px;
+  max-width: 350px;
+  width: 100%;
+  
+}
+
+.crucero .nav .navFiltros .destino {
+  max-width: 200px;
+  min-width: 200px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.crucero .nav .navFiltros .dias {
+  max-width: 80px;
+  min-width: 80px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.crucero .nav .clean i {
+  font-size: 30px;
+  color: white;
 }
 
 .crucero .contenido {
@@ -49,13 +69,13 @@
 
   .card {
     overflow: hidden;
-    max-width: 350px;
+    width: 360px;
     box-shadow: 3px 3px 15px 4px rgba(0, 0, 0, 0.3);
     .imagen {
       width: 100%;
       img {
         width: 100%;
-        max-width: 350px;
+        max-width: 360px;
         max-height: 180px;
       }
     }
@@ -92,11 +112,98 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      text-align: center;
+      .precios {
+        width: 60%;
+        margin: 0;
+        padding: 0;
+        .text {
+          font-size: 0.78rem;
+          margin: 0;
+          padding: 0;
+          height: 10px;
+        }
+        .precio {
+          margin: 0;
+          padding: 0;
+          font-size: 1.7rem;
+          font-weight: bold;
+          color: #f05235;
+        }
+      }
+      .mas {
+        width: 40%;
+      }
     }
   }
 
   .card:hover {
     transition: all ease 0.5s;
-    transform: scale(1.05);
+    transform: scale(1.02);
+  }
+}
+
+
+
+/* Media Queries para responsividad */
+@media (max-width: 1200px) {
+  .crucero .nav .buscar {
+    width: 100%;
+    flex: none;
+    max-width: none;
+  }
+  
+  .crucero .nav .navFiltros {
+    width: 100%;
+    flex: none;
+    max-width: none;
+    justify-content: center;
+  }
+  
+}
+
+@media (max-width: 768px) {
+  .crucero .nav .navFiltros {
+    justify-content: center;
+  }
+
+  .crucero .nav .navFiltros .fechas {
+    max-width: 100%;
+  }
+
+  .crucero .nav .navFiltros .destino,
+  .crucero .nav .navFiltros .dias {
+    max-width: 100%;
+    min-width: 150px;
+  }
+
+  .crucero .nav .buscar {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .crucero .nav {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .crucero .nav .navFiltros {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .crucero .nav .buscar {
+    width: 95%;
+    min-width: unset;
+  }
+
+  .crucero .nav .navFiltros .fechas,
+  .crucero .nav .navFiltros .destino,
+  .crucero .nav .navFiltros .dias {
+    width: 95%;
   }
 }

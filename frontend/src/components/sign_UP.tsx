@@ -19,6 +19,7 @@ import {
 
 import { authService } from "../api/auth";
 import { useAuth } from "../contexts/AuthContext";
+
 import { paises } from "@/config/api";
 
 interface SignUpProps {
@@ -45,6 +46,7 @@ export default function SignUp({
     const getCountries = async () => {
       try {
         const data = await paises();
+
         setCountries(data);
       } catch (err) {
         setError(err.message);
@@ -113,7 +115,12 @@ export default function SignUp({
   };
 
   return (
-    <Drawer backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Drawer
+      backdrop="blur"
+      isDismissable={false}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+    >
       <DrawerContent>
         {(onClose) => (
           <>
@@ -143,6 +150,7 @@ export default function SignUp({
                     name="genero"
                     placeholder="Seleccione su género"
                     variant="bordered"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <SelectItem key="m" value="m">
                       Masculino
@@ -181,6 +189,7 @@ export default function SignUp({
                     name="pais"
                     placeholder="Seleccione país"
                     variant="bordered"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     {(country) => (
                       <AutocompleteItem key={country.cca2}>

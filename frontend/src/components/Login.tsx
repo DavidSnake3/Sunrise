@@ -58,7 +58,12 @@ export default function Login({
 
   return (
     <>
-      <Drawer backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Drawer
+        backdrop="blur"
+        isDismissable={false}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
         <DrawerContent>
           {(onClose) => (
             <>

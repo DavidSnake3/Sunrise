@@ -16,7 +16,7 @@ export interface Crucero {
   barco?: Barco;
   destino?: Destino;
   fechas?: FechaCrucero[];
-  complementos?: any[];
+  complementos?: Complemento[];
 }
 
 export interface Itinerario {
@@ -26,6 +26,14 @@ export interface Itinerario {
   descripcion: string;
   llegada: string;
   salida: string;
+}
+
+export interface Complemento {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  aplicado_por: string
 }
 
 const API_URL = "http://localhost:8000/api";
