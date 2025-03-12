@@ -13,29 +13,36 @@ use App\Models\FechasCrucero;
 use App\Models\Itinerario;
 use App\Models\PreciosHabitacion;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 class CruceroController extends Controller
 {
-    // Obtener todos los cruceros o uno específico (con itinerarios, barco, destino, fechas y complementos)
     public function getAll(Request $request)
     {
         $request->validate([
-            'id' => 'sometimes|integer|min:1'
+            'id' => 'sometimes|integer|min:1',
+            'incluir_desactivados' => 'sometimes|boolean'
         ]);
-
+    
         if ($request->has('id')) {
             return $this->getById($request->id);
         }
-
-        $cruceros = Crucero::with([
-            'itinerarios.puerto', 
-            'barco', 
-            'destino', 
-            'fechas.preciosHabitaciones', 
-            'complementos'
-        ])->get();
-
+    
+        $query = Crucero::with([
+                'itinerarios.puerto', 
+                'barco', 
+                'destino', 
+                'fechas.preciosHabitaciones', 
+                'complementos'
+            ]);
+    
+        if (!$request->boolean('incluir_desactivados')) {
+            $query->where('desactivado', 0);
+        }
+    
+        $cruceros = $query->get();
+    
         return CruceroResource::collection($cruceros);
     }
 
@@ -106,5 +113,67 @@ class CruceroController extends Controller
         }
 
         return ComplementoResource::collection($crucero->complementos);
+    }
+
+
+    // CRUD -----
+
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:255',
+        'foto' => 'required|string',
+        'cantidad_dias' => 'required|integer|min:1',
+        'id_barco' => 'required|exists:barcos,id_barco',
+        'id_destino' => 'required|exists:destinos,id_destino',
+        'complementos' => 'sometimes|array',
+        'complementos.*' => 'exists:complementos,id_complemento'
+    ]);
+
+    $validated['desactivado'] = 0;
+
+    return DB::transaction(function () use ($validated) {
+        $crucero = Crucero::create($validated);
+        
+        if (isset($validated['complementos'])) {
+            $crucero->complementos()->sync($validated['complementos']);
+        }
+
+        return new CruceroResource($crucero->load(['barco', 'destino', 'complementos']));
+    });
+}
+
+public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'nombre' => 'sometimes|string|max:255',
+        'foto' => 'sometimes|string',
+        'cantidad_dias' => 'sometimes|integer|min:1',
+        'id_barco' => 'sometimes|exists:barcos,id_barco',
+        'id_destino' => 'sometimes|exists:destinos,id_destino',
+        'complementos' => 'sometimes|array',
+        'complementos.*' => 'exists:complementos,id_complemento'
+    ]);
+
+    return DB::transaction(function () use ($validated, $id) {
+        $crucero = Crucero::findOrFail($id);
+        $crucero->update($validated);
+        
+        if (isset($validated['complementos'])) {
+            $crucero->complementos()->sync($validated['complementos']);
+        }
+
+        return new CruceroResource($crucero->fresh()->load(['barco', 'destino', 'complementos']));
+    });
+}
+    public function deactivate($id)
+    {
+        $crucero = Crucero::findOrFail($id);
+        $crucero->update(['desactivado' => 1]);
+
+        return response()->json([
+            'message' => 'Crucero desactivado',
+            'data' => new CruceroResource($crucero)
+        ]);
     }
 }

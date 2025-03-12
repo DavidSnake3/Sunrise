@@ -15,7 +15,8 @@ class Crucero extends Model
         'foto',
         'cantidad_dias',
         'id_barco',
-        'id_destino'
+        'id_destino',
+        'desactivado'
     ];
 
     public function itinerarios()

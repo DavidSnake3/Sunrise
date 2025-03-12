@@ -70,6 +70,10 @@ Route::get('itinerarios', [CruceroController::class, 'getItinerariosByCrucero'])
 Route::get('fechas', [CruceroController::class, 'getFechasByCrucero']);
 Route::get('precios_habitaciones', [CruceroController::class, 'getPreciosByFecha']);
 Route::get('crucero_complementos', [CruceroController::class, 'getComplementosByCrucero']);
+//Crud
+Route::post('cruceros', [CruceroController::class, 'store']);
+Route::patch('cruceros/{id}', [CruceroController::class, 'update']);
+Route::delete('cruceros/{id}', [CruceroController::class, 'deactivate']);
 
 // Complementos generales
 Route::get('complementos', [ComplementoController::class, 'getAll']);
