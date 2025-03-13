@@ -14,7 +14,9 @@ class PuertoResource extends JsonResource
             'nombre' => $this->nombre,
             'pais' => $this->pais,
             'foto' => $this->foto,
+            'desactivado' => $this->desactivado,
             'destino' => new DestinoResource($this->whenLoaded('destino')),
+            'itinerarios' => ItinerarioResource::collection($this->whenLoaded('itinerarios')),
             'links' => [
                 'self' => url("/api/puertos?id={$this->id_puerto}"),
                 'destino' => url("/api/destinos?id={$this->id_destino}")
