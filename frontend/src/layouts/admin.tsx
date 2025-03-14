@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { Button, ScrollShadow } from "@heroui/react";
@@ -9,7 +10,7 @@ import Barcos from "@/pages/admin/barcos";
 import Cruceros from "@/pages/admin/cruceros";
 import Reservas from "@/pages/admin/reservas";
 import Usuarios from "@/pages/admin/usuarios";
-import "../styles/admin.css";
+import "../styles/admin/admin.css";
 import { MenuIcon } from "@/components/icons";
 import PuertosPage from "@/pages/admin/Puertos";
 import FechasCruceroPage from "@/pages/admin/fechas-crucero";
@@ -94,7 +95,7 @@ export default function DefaultLayout() {
 
         {/* Contenedor Dinámico con scroll */}
         <ScrollShadow className="flex-grow overflow-auto h-[calc(100vh-60px)]">
-          <div className="flex-grow w-full flex p-5">
+          <div className="flex-grow w-full flex p-3">
             <Routes>
               <Route element={<Dashboard />} path="" />
               <Route element={<Dashboard />} path="dashboard/*" />
