@@ -1,4 +1,7 @@
-import React, { useState, useRef } from "react";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable prettier/prettier */
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -6,15 +9,19 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  addToast,
 } from "@heroui/react";
-import { addToast } from "@heroui/toast";
 
 import { destinoService, Destino } from "../../api/destinos";
 import { useAuth } from "../../contexts/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
 
+import { Puerto } from "@/api/puertos";
 import LoadingScreen from "@/components/loading";
 import { DataTable } from "@/components/common/DataTable";
+
+import "@/styles/admin/admin.css"
+import "@/styles/admin/destino.css"
 
 const DestinosPage = () => {
   const navigate = useNavigate();
@@ -30,7 +37,12 @@ const DestinosPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingDestinoId, setEditingDestinoId] = useState<number | null>(null);
-  const [formData, setFormData] = useState({ nombre: "", foto: "" });
+  const [formData, setFormData] = useState<{
+    nombre: string;
+    foto: string;
+    puertos: Puerto[];  // Aquí especificamos que es un array de "Puerto"
+    edit: boolean;
+  }>({ nombre: "", foto: "", puertos: [], edit: false });
   const [formErrors, setFormErrors] = useState<{
     nombre?: string;
     foto?: string;
@@ -42,7 +54,7 @@ const DestinosPage = () => {
     { uid: "id", name: "ID", sortable: true },
     { uid: "nombre", name: "Nombre", sortable: true },
     { uid: "foto", name: "Foto" },
-    { uid: "actions", name: "Acciones" },
+    { uid: "acciones", name: "Acciones" },
   ];
 
   const handleVerPuertos = (destino: Destino) => {
@@ -65,47 +77,26 @@ const DestinosPage = () => {
     }
   };
 
-  const renderCell = (
-    destino: Destino,
-    columnKey: keyof Destino | "actions",
-  ) => {
+  const renderCell = (destino: Destino, columnKey: keyof Destino | "acciones") => {
     switch (columnKey) {
       case "foto":
         return (
           <img
             alt={destino.nombre}
-            className="w-20 h-20 object-cover rounded"
+            className="m-auto w-[80px] h-[50px] object-cover rounded border"
             src={`data:image/jpeg;base64,${destino.foto}`}
           />
         );
-      case "puertos":
-        return null;
-      case "actions":
+      case "puertos": return null;
+      case "acciones":
         return (
           <div className="flex gap-2 justify-center">
             <Button
-              color="primary"
-              size="sm"
-              onPress={() => handleOpenModal(destino, true)}
-            >
-              Editar
-            </Button>
-            <Button color="primary" size="sm" onPress={() => handleOpenModal()}>
-              Agregar
-            </Button>
-            <Button
-              color="danger"
-              size="sm"
-              onPress={() => handleEliminar(destino.id)}
-            >
-              Eliminar
-            </Button>
-            <Button
-              color="secondary"
+              color="warning"
               size="sm"
               onPress={() => handleVerPuertos(destino)}
             >
-              Puertos
+              Ver Puertos
             </Button>
           </div>
         );
@@ -136,18 +127,22 @@ const DestinosPage = () => {
     }
   };
 
-  const handleOpenModal = (destino?: Destino, edit = false) => {
+  const handleOpenModal = (id: number, edit = false) => {
+    const destino = destinos?.find((d) => d.id === id);
+
     if (edit && destino) {
       setIsEditing(true);
       setEditingDestinoId(destino.id);
       setFormData({
         nombre: destino.nombre,
         foto: destino.foto,
+        edit: true,
+        puertos: destino.puertos ? destino.puertos : []
       });
     } else {
       setIsEditing(false);
       setEditingDestinoId(null);
-      setFormData({ nombre: "", foto: "" });
+      setFormData({ nombre: "", foto: "", puertos: [], edit: false });
     }
     setFormErrors({});
     setModalOpen(true);
@@ -156,10 +151,6 @@ const DestinosPage = () => {
   const closeModal = () => {
     setModalOpen(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const validateForm = () => {
@@ -218,96 +209,376 @@ const DestinosPage = () => {
       </div>
     );
 
-  // TopRightContent similar al ejemplo, con el botón "Agregar"
-  const topRightContent = (
-    <div className="flex gap-3">
-      <Button color="primary" onPress={() => handleOpenModal()}>
-        Agregar
-      </Button>
-    </div>
-  );
-
   return (
     <div className="divAdmin">
       <DataTable<Destino>
+        add={handleOpenModal}
+        className="p-1"
         columns={columns}
         data={destinos || []}
-        initialVisibleColumns={["nombre", "foto", "actions"]}
+        edit={(id) => handleOpenModal(id, true)}
+        initialVisibleColumns={["nombre", "foto", "acciones"]}
         nombre="Gestión de Destinos"
+        remove={handleEliminar}
         renderCell={renderCell}
         rowKey="id"
         searchPlaceholder="Buscar destino..."
-        topRightContent={topRightContent}
+        selectionMode="single"
       />
 
-      <Modal backdrop="blur" isOpen={modalOpen} size="5xl" onClose={closeModal}>
-        <ModalContent className="max-w-4xl rounded-xl shadow-2xl">
-          <ModalHeader className="bg-primary text-white py-2 px-8 rounded-t-xl">
-            <div className="flex flex-col space-y-1">
-              <h2 className="text-2xl font-bold">
-                {isEditing ? "Modificar Destino" : "Agregar Destino"}
-              </h2>
+      {modalOpen && <ModeloDestino Data={formData} onClose={setModalOpen} />}
+
+    </div>
+  );
+};
+
+function ModeloDestino({ Data, onClose }: { Data: { nombre: string, foto: string, puertos: Puerto[], edit: boolean }, onClose?: (b: boolean) => void }) {
+  const [formData, setFormData] = useState<{
+    nombre: string;
+    foto: string;
+    puertos: Puerto[];  // Aquí especificamos que es un array de "Puerto"
+    edit: boolean;
+  }>(Data);
+  const [loadingModal, setLoadingModal] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [formErrors, setFormErrors] = useState<{
+    nombre?: string;
+    foto?: string;
+  }>({});
+
+  const handleSubmit = async () => {
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        const base64Data = base64String.split(",")[1];
+
+        setFormData({ ...formData, foto: base64Data });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, nombre: e.target.value });
+  };
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose(false);
+    }
+  };
+
+  return (
+    <Modal backdrop="blur" className="h-[500px]" isOpen={true} onClose={handleClose}>
+      <ModalContent className="max-w-4xl rounded-xl shadow-2xl">
+        <ModalHeader className="bg-primary text-white py-2 px-3 rounded-t-xl h-[50px]">
+          <h2 className="text-2xl font-bold">
+            {formData.edit ? `Modificar Destino: ${formData.nombre}` : "Agregar Destino"}
+          </h2>
+        </ModalHeader>
+
+        <ModalBody className="pt-1 px-4 h-full overflow-hidden">
+          {loadingModal ? (
+            <div className="flex items-center justify-center h-full">
+              {LoadingScreen("Guardando...")}
             </div>
-          </ModalHeader>
-          <ModalBody className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-            {loadingModal ? (
-              <div className="flex-grow h-[calc(100vh-108px)] w-full">
-                {LoadingScreen("Guardando...")}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="block mb-1 font-semibold">Nombre:</h3>
-                  <input
-                    className="w-full p-2 border rounded"
-                    name="nombre"
-                    type="text"
-                    value={formData.nombre}
-                    onChange={handleChange}
-                  />
-                  {formErrors.nombre && (
-                    <span className="text-danger text-sm">
-                      {formErrors.nombre}
-                    </span>
-                  )}
-                </div>
-                <div>
-                  <h3 className="block mb-1 font-semibold">Foto:</h3>
-                  {formData.foto && (
-                    <img
-                      alt="Preview"
-                      className="w-20 h-20 object-cover rounded mb-2"
-                      src={`data:image/jpeg;base64,${formData.foto}`}
-                    />
+          ) : (
+
+            <div className="h-full flex flex-col flex-grow">
+
+              <p className="block font-semibold">Nombre:</p>
+              <input
+                className="w-full p-2 border border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                name="nombre"
+                type="text"
+                value={formData.nombre}
+                onChange={handleChange}
+              />
+              {formErrors.nombre && (
+                <span className="text-red-500 text-sm">{formErrors.nombre}</span>
+              )}
+
+              <div className="flex gap-4 h-full">
+
+                <div className="w-[250px] flex flex-col">
+                  <h3 className="block font-semibold mb-1">Foto:</h3>
+                  {formData.foto ? (
+                    <div
+                      className="relative selectImg cursor-pointer"
+                      onClick={() => setFormData({ ...formData, foto: "" })}
+                    >
+                      <img
+                        alt="Preview"
+                        className="w-full h-full object-cover rounded-lg"
+                        src={`data:image/jpeg;base64,${formData.foto}`}
+                      />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white opacity-0 hover:opacity-100 transition-opacity">
+                        <i className="fi fi-rr-trash text-lg" />
+                        <p className="text-sm">Remover foto</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className="selectImg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <i className="fi fi-rr-add-image text-3xl text-gray-500" />
+                      <p className="text-gray-500 text-sm">Añadir foto</p>
+                    </div>
                   )}
                   <input
                     ref={fileInputRef}
                     accept="image/*"
+                    className="hidden"
                     type="file"
                     onChange={handleFileChange}
                   />
                   {formErrors.foto && (
-                    <span className="text-danger text-sm">
-                      {formErrors.foto}
-                    </span>
+                    <span className="text-red-500 text-sm">{formErrors.foto}</span>
                   )}
+
+                  <div className="flex gap-2 mt-3">
+                    <Button
+                      className="px-4 py-2 rounded-lg flex-grow"
+                      color="danger"
+                      onPress={handleClose}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      className="px-4 py-2 rounded-lg w-full flex-grow"
+                      color="primary"
+                      disabled={loadingModal}
+                      onPress={handleSubmit}
+                    >
+                      {formData.edit ? "Modificar" : "Agregar"}
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex justify-end">
-                  <Button
-                    color="primary"
-                    disabled={loadingModal}
-                    onPress={handleSubmit}
-                  >
-                    {isEditing ? "Modificar" : "Agregar"}
-                  </Button>
+
+                <div className="flex-grow">
+                  <h3 className="block font-semibold mb-1 mx-auto">Lista de Puertos:</h3>
+                  <div className="w-full">
+                    <ModeloPuerto ListaPuertos={formData.puertos} />
+                  </div>
                 </div>
+
               </div>
+
+            </div>
+          )}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+
+}
+
+function ModeloPuerto({
+  ListaPuertos,
+  onChangePuertos,
+}: {
+  ListaPuertos: Puerto[];
+  onChangePuertos: (puertos: Puerto[]) => void;
+}) {
+  const [puertos, setPuertos] = useState<Puerto[]>(ListaPuertos || []);
+  const [puertoSeleccionado, setPuertoSeleccionado] = useState<Puerto | null>(null);
+  const [nuevoPuerto, setNuevoPuerto] = useState<Omit<Puerto, "id">>({
+    nombre: "",
+    pais: "",
+    foto: "",
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setPuertos(ListaPuertos || []);
+  }, [ListaPuertos]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+
+        setNuevoPuerto({ ...nuevoPuerto, foto: base64String.split(",")[1] });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddPuerto = () => {
+    if (!nuevoPuerto.nombre || !nuevoPuerto.pais) {
+      alert("Por favor, llena todos los campos.");
+
+      return;
+    }
+
+    const nuevoId = puertos.length ? Math.max(...puertos.map((p) => p.id)) + 1 : 1;
+    const nuevoPuertoObj: Puerto = { id: nuevoId, ...nuevoPuerto };
+    const nuevaLista = [...puertos, nuevoPuertoObj];
+
+    setNuevoPuerto({ nombre: "", pais: "", foto: "" });
+    setPuertos(nuevaLista);
+    onChangePuertos(nuevaLista);
+  };
+
+  const handleSelectPuerto = (puerto: Puerto) => {
+    if (puertoSeleccionado?.id === puerto.id) {
+      setPuertoSeleccionado(null);
+      setNuevoPuerto({ nombre: "", pais: "", foto: "" });
+    } else {
+      setPuertoSeleccionado(puerto);
+      setNuevoPuerto({
+        nombre: puerto.nombre,
+        pais: puerto.pais,
+        foto: puerto.foto || "",
+      });
+    }
+  };
+
+  const handleSavePuerto = () => {
+    if (!puertoSeleccionado) return;
+
+    const puertosActualizados = puertos.map((p) =>
+      p.id === puertoSeleccionado.id ? { ...puertoSeleccionado, ...nuevoPuerto } : p
+    );
+
+    setPuertoSeleccionado(null);
+    setNuevoPuerto({ nombre: "", pais: "", foto: "" });
+    setPuertos(puertosActualizados);
+    onChangePuertos(puertosActualizados);
+  };
+
+  const handleDeletePuerto = (id: number) => {
+    const puertosFiltrados = puertos.filter((p) => p.id !== id);
+
+    setPuertoSeleccionado(null);
+    setNuevoPuerto({ nombre: "", pais: "", foto: "" });
+    setPuertos(puertosFiltrados);
+    onChangePuertos(puertosFiltrados);
+  };
+
+  return (
+    <div className="w-full h-[340px] overflow-y-auto px-4 py-2 border border-primary rounded-lg shadow-md">
+
+      <div className="flex gap-4">
+        <div>
+          <p className="block font-semibold">Foto:</p>
+          {nuevoPuerto.foto ? (
+            <div
+              className="relative cursor-pointer overflow-hidden"
+              onClick={() => setNuevoPuerto({ ...nuevoPuerto, foto: "" })}
+            >
+              <img
+                alt="Preview"
+                className="w-[150px] h-[107px] object-cover rounded-lg"
+                src={`data:image/jpeg;base64,${nuevoPuerto.foto}`}
+              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 rounded-lg text-white opacity-0 hover:opacity-100 transition-opacity">
+                <i className="fi fi-rr-trash text-lg" />
+                <p className="text-sm">Remover foto</p>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="w-[150px] h-[107px] flex items-center justify-center border border-gray-300 p-3 rounded-lg cursor-pointer hover:bg-gray-100"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <i className="fi fi-rr-add-image text-2xl text-gray-500 mr-2" />
+              <p className="text-gray-500 text-sm">Añadir foto</p>
+            </div>
+          )}
+          <input ref={fileInputRef} accept="image/*" className="hidden" type="file" onChange={handleFileChange} />
+        </div>
+
+        <div className="flex flex-col w-full flex-grow">
+          <div>
+            <p className="block font-semibold">Puerto:</p>
+            <input
+              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              type="text"
+              value={nuevoPuerto.nombre}
+              onChange={(e) => setNuevoPuerto({ ...nuevoPuerto, nombre: e.target.value })}
+            />
+          </div>
+
+          <p className="block font-semibold">País:</p>
+          <div className="flex justify-between gap-3">
+            <select
+              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              value={nuevoPuerto.pais}
+              onChange={(e) => setNuevoPuerto({ ...nuevoPuerto, pais: e.target.value })}
+            >
+              <option value="">Seleccione un país</option>
+              <option value="Costa Rica">Costa Rica</option>
+              <option value="México">México</option>
+              <option value="España">España</option>
+              <option value="Argentina">Argentina</option>
+            </select>
+
+            {puertoSeleccionado ? (
+              <>
+                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600" onClick={handleSavePuerto}>
+                  Guardar
+                </button>
+                <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" onClick={() => handleDeletePuerto(puertoSeleccionado.id)}>
+                  Eliminar
+                </button>
+              </>
+            ) : (
+              <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition" onClick={handleAddPuerto}>
+                Añadir
+              </button>
             )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full border-collapse border border-gray-300 rounded-lg">
+          <thead>
+            <tr className="bg-primary text-white h-[25px]">
+              <th className="border">Imagen</th>
+              <th className="border">Puerto</th>
+              <th className="border">País</th>
+            </tr>
+          </thead>
+          <tbody>
+            {puertos.length > 0 ? (
+              puertos.map((puerto) => (
+                <tr
+                  key={puerto.id}
+                  className={`text-center border cursor-pointer ${
+                    puertoSeleccionado?.id === puerto.id ? "bg-[#f57c67]" : "hover:bg-gray-100"
+                  }`}
+                  onClick={() => handleSelectPuerto(puerto)}
+                >
+                  <td className="p-1 border">{puerto.foto ? <img alt="Puerto" className="w-12 h-12 object-cover rounded-md mx-auto" src={`data:image/jpeg;base64,${puerto.foto}`} /> : "Sin Imagen"}</td>
+                  <td className="p-1 border">{puerto.nombre}</td>
+                  <td className="p-1 border">{puerto.pais}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className="p-4 text-center text-gray-500" colSpan={3}>No hay puertos agregados.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
-};
+}
 
 export default DestinosPage;

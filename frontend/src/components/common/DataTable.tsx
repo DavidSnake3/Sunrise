@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React from "react";
 import {
   Table,
@@ -9,11 +10,13 @@ import {
   Input,
   Pagination,
   SortDescriptor,
+  Button,
 } from "@heroui/react";
 import { Key } from "@react-types/shared";
 
 interface DataTableProps<T> {
   columns: Column[];
+  className: string;
   data: T[];
   renderCell: (item: T, columnKey: keyof T) => React.ReactNode;
   rowKey: keyof T;
@@ -22,6 +25,9 @@ interface DataTableProps<T> {
   initialVisibleColumns?: string[];
   selectionMode?: "single" | "multiple";
   selectedKeys?: Set<Key> | "all";
+  edit: (id: number) => void;
+  remove: (id: number) => void;
+  add: (id: number) => void;
   onSelectionChange?: (keys: Set<Key> | "all") => void;
   topRightContent?: React.ReactNode;
   topContent?: React.ReactNode; // nuevo prop para contenido superior personalizado
@@ -43,10 +49,15 @@ export const DataTable = <T extends Record<string, any>>({
   nombre = "",
   selectionMode,
   selectedKeys,
-  onSelectionChange,
   topRightContent,
   topContent,
+  className,
+  edit,
+  add,
+  remove,
+
 }: DataTableProps<T>) => {
+  const [selectedItem, setSelectedItem] = React.useState(-1)
   const [filterValue, setFilterValue] = React.useState("");
   const [visibleColumns] = React.useState<Set<string>>(
     new Set(initialVisibleColumns || columns.map((c) => c.uid)),
@@ -100,17 +111,47 @@ export const DataTable = <T extends Record<string, any>>({
   // Contenido por defecto si no se pasa topContent personalizado
   const defaultTopContent = (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-5">
-        <h1 className="text-2xl font-bold">{nombre}</h1>
-        <Input
-          isClearable
-          className="w-full sm:max-w-[44%]"
-          placeholder={searchPlaceholder}
-          startContent={<i className="fi fi-rr-search" />}
-          value={filterValue}
-          onClear={onClear}
-          onValueChange={onSearchChange}
-        />
+      <div className="flex justify-between">
+        <div className="flex items-center gap-5 flex-grow w-[100%]">
+          <h1 className="text-2xl font-bold">{nombre}</h1>
+          <Input
+            isClearable
+            className="w-full sm:max-w-[35%]"
+            placeholder={searchPlaceholder}
+            startContent={<i className="fi fi-rr-search" />}
+            value={filterValue}
+            onClear={onClear}
+            onValueChange={onSearchChange}
+          />
+        </div>
+        <div className="flex items-center gap-5">
+          <Button
+            className="w-[110px] h-[45px]"
+            color="success"
+            size="md"
+            onPress={() => add(selectedItem)}
+          >
+            <i className="fi fi-rr-plus" />Agregar
+          </Button>
+          <Button
+            className="w-[110px] h-[45px]"
+            color="primary"
+            isDisabled={selectedItem === -1}
+            size="md"
+            onPress={() => edit(selectedItem)}
+          >
+            <i className="fi fi-rr-pencil" />Editar
+          </Button>
+          <Button
+            className="w-[110px] h-[45px]"
+            color="danger"
+            isDisabled={selectedItem === -1}
+            size="md"
+            onPress={() => remove(selectedItem)}
+          >
+            <i className="fi fi-rr-trash" />Eliminar
+          </Button>
+        </div>
       </div>
       <div className="flex justify-between items-center">
         <span className="text-default-400 text-small">
@@ -154,12 +195,18 @@ export const DataTable = <T extends Record<string, any>>({
           />
         </div>
       }
+      className={className}
       classNames={{ wrapper: "" }}
+      color="primary"
       selectedKeys={selectedKeys}
       selectionMode={selectionMode}
       sortDescriptor={sortDescriptor}
       topContent={topContent || defaultTopContent}
-      onSelectionChange={onSelectionChange}
+      onSelectionChange={(key) => {
+        const item = [...key.values()][0];
+
+        (typeof item === "undefined" ? setSelectedItem(-1) : setSelectedItem(Number(item)))
+      }}
       onSortChange={setSortDescriptor}
     >
       <TableHeader columns={headerColumns}>
@@ -173,7 +220,7 @@ export const DataTable = <T extends Record<string, any>>({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={sortedItems}>
+      <TableBody items={sortedItems} >
         {(item: T) => (
           <TableRow key={String(item[rowKey])}>
             {(columnKey) => (
