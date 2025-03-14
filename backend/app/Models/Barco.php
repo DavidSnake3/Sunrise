@@ -23,10 +23,17 @@ class Barco extends Model
         'altura',
         'largo',
         'ancho',
-        'año_construccion'
+        'año_construccion',
+        'desactivado'
     ];
     public function habitaciones()
     {
         return $this->hasMany(Habitacion::class, 'id_barco');
     }
+
+
+        public function fotos()
+        {
+            return $this->hasMany(FotoBarco::class, 'Id_barco', 'id_barco');
+        }
 }

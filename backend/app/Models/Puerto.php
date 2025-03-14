@@ -18,7 +18,8 @@ class Puerto extends Model
         'id_destino',
         'nombre',
         'pais',
-        'foto'
+        'foto',
+        'desactivado' 
     ];
 
     public function destino() {

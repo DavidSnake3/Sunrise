@@ -19,6 +19,8 @@ class BarcoResource extends JsonResource
             'largo' => $this->largo,
             'tonelaje' => $this->tonelaje,
             'altura' => $this->altura,
+            'desactivado' => $this->desactivado,
+            'fotos' => FotoBarcoResource::collection($this->whenLoaded('fotos')),
             'habitaciones' => HabitacionResource::collection($this->whenLoaded('habitaciones')),
             'links' => [
                 'self' => url("/api/barcos?id={$this->id_barco}"),

@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Habitacion extends Model
 {
     use HasFactory;
-
+    
     protected $table = 'habitaciones';
     protected $primaryKey = 'id_habitacion';
+    public $timestamps = false; 
     protected $fillable = [
         'id_barco',
         'categoria',
@@ -19,7 +20,8 @@ class Habitacion extends Model
         'capacidad_min',
         'capacidad_max',
         'tamaño',
-        'cantidad_disponibles'
+        'cantidad_disponibles',
+        'desactivado'
     ];
 
     public function barco()

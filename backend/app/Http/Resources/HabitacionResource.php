@@ -18,6 +18,7 @@ class HabitacionResource extends JsonResource
             'size' => $this->tamaño,
             'descripcion' => $this->descripcion,
             'cantidad' => $this->cantidad_disponibles,
+            'desactivado' => $this->desactivado,
             'barco' => new BarcoResource($this->whenLoaded('barco')),
             'detalle' => new DetalleHabitacionResource($this->whenLoaded('detallesHabitacion')),
             'links' => [

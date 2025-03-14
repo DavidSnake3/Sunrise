@@ -48,18 +48,30 @@ Route::get('usuarios', [UserController::class, 'index']);
 
 //Destinos
 Route::get('destinos', [DestinoController::class, 'getAll']);
-Route::get('puertos', [DestinoController::class, 'getAllPuertos']);
+// Route::get('puertos', [DestinoController::class, 'getAllPuertos']);
+//Crud
 Route::post('destinos/', [DestinoController::class, 'store']);
 Route::patch('destinos/{id}', [DestinoController::class, 'update']);
 Route::delete('destinos/{id}', [DestinoController::class, 'deactivate']);
 
 
-
-
-//Barcos e habitaciones
+//Barcos 
 Route::get('barcos', [BarcoController::class, 'getAll']);
-Route::get('habitaciones', [BarcoController::class, 'getAllHabitaciones']);
+// Route::get('habitaciones', [BarcoController::class, 'getAllHabitaciones']);
 Route::get('detalle_habitacion', [BarcoController::class, 'getDetalleHabitacion']);
+Route::get('/barcos/{idBarco}/fotos', [BarcoController::class, 'getFotos']);
+//Crud
+Route::post('barcos', [BarcoController::class, 'store']);
+Route::patch('barcos/{id}', [BarcoController::class,'update']);
+Route::delete('barcos/{id}', [BarcoController::class, 'desactivate']);
+
+//Habitaciones
+Route::get('habitaciones', [HabitacionController::class, 'getAll']);
+//Crud
+Route::post('habitaciones', [HabitacionController::class, 'store']);
+Route::patch('habitaciones/{id}', [HabitacionController::class, 'update']);
+Route::delete('habitaciones/{id}', [HabitacionController::class, 'deactivate']);
+
 
 // Crucero y relaciones
 Route::get('cruceros', [CruceroController::class, 'getAll']);
@@ -67,11 +79,24 @@ Route::get('itinerarios', [CruceroController::class, 'getItinerariosByCrucero'])
 Route::get('fechas', [CruceroController::class, 'getFechasByCrucero']);
 Route::get('precios_habitaciones', [CruceroController::class, 'getPreciosByFecha']);
 Route::get('crucero_complementos', [CruceroController::class, 'getComplementosByCrucero']);
+//Crud
+Route::post('cruceros', [CruceroController::class, 'store']);
+Route::patch('cruceros/{id}', [CruceroController::class, 'update']);
+Route::delete('cruceros/{id}', [CruceroController::class, 'deactivate']);
+
+
+//Puertos
+Route::get('/puertos', [PuertoController::class, 'getAll']);
+Route::get('/puerto', [PuertoController::class, 'getById']);
+//Crud
+Route::post('/puertos', [PuertoController::class, 'store']);
+Route::patch('/puertos/{id}', [PuertoController::class, 'update']);
+Route::delete('/puertos/{id}', [PuertoController::class, 'desactivate']);
+
 
 // Complementos generales
 Route::get('complementos', [ComplementoController::class, 'getAll']);
 Route::get('complemento', [ComplementoController::class, 'getById']);
-
 
 // Reservas principales
 Route::get('reservas', [ReservaController::class, 'getAll']);
