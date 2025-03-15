@@ -23,7 +23,12 @@ export const destinoService = {
 
     return response.data.data;
   },
-  async store(destino: { nombre: string; foto: string }): Promise<Destino> {
+
+  async store(destino: {
+    nombre: string;
+    foto: string;
+    puertos: Puerto[];
+  }): Promise<Destino> {
     const response = await axios.post(`${API_URL}/destinos`, destino);
 
     return response.data.data;

@@ -9,8 +9,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  addToast,
 } from "@heroui/react";
+import { toast } from 'react-toastify';
 
 import { destinoService, Destino } from "../../api/destinos";
 import { useAuth } from "../../contexts/AuthContext";
@@ -23,6 +23,7 @@ import { DataTable } from "@/components/common/DataTable";
 import "@/styles/admin/admin.css"
 import "@/styles/admin/destino.css"
 
+
 const DestinosPage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -32,23 +33,14 @@ const DestinosPage = () => {
     error,
     refetch,
   } = useFetchData<Destino[]>(destinoService.getAll);
-
-  // Estados para el modal y el formulario
   const [modalOpen, setModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingDestinoId, setEditingDestinoId] = useState<number | null>(null);
   const [formData, setFormData] = useState<{
+    id: number;
     nombre: string;
     foto: string;
     puertos: Puerto[];  // Aquí especificamos que es un array de "Puerto"
     edit: boolean;
-  }>({ nombre: "", foto: "", puertos: [], edit: false });
-  const [formErrors, setFormErrors] = useState<{
-    nombre?: string;
-    foto?: string;
-  }>({});
-  const [loadingModal, setLoadingModal] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  }>({id: 0, nombre: "", foto: "", puertos: [], edit: false });
 
   const columns = [
     { uid: "id", name: "ID", sortable: true },
@@ -59,22 +51,6 @@ const DestinosPage = () => {
 
   const handleVerPuertos = (destino: Destino) => {
     navigate(`/admin/destinos/puertos/${destino.id}`);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        const base64Data = base64String.split(",")[1];
-
-        setFormData({ ...formData, foto: base64Data });
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const renderCell = (destino: Destino, columnKey: keyof Destino | "acciones") => {
@@ -109,20 +85,11 @@ const DestinosPage = () => {
     if (window.confirm("¿Estás seguro de eliminar este destino?")) {
       try {
         await destinoService.deactivate(id);
-        addToast({
-          title: "Destino eliminado",
-          description: "El destino se eliminó correctamente",
-          variant: "solid",
-          color: "secondary",
-        });
+        toast.success("Detino eliminado exitosamente")
+
         refetch && refetch();
       } catch {
-        addToast({
-          title: "Error",
-          description: "Hubo un error al eliminar el destino",
-          variant: "solid",
-          color: "danger",
-        });
+        toast.error("Hubo un problema al eliminar el destino")
       }
     }
   };
@@ -131,71 +98,17 @@ const DestinosPage = () => {
     const destino = destinos?.find((d) => d.id === id);
 
     if (edit && destino) {
-      setIsEditing(true);
-      setEditingDestinoId(destino.id);
       setFormData({
+        id: destino.id,
         nombre: destino.nombre,
         foto: destino.foto,
         edit: true,
         puertos: destino.puertos ? destino.puertos : []
       });
     } else {
-      setIsEditing(false);
-      setEditingDestinoId(null);
-      setFormData({ nombre: "", foto: "", puertos: [], edit: false });
+      setFormData({id: 0, nombre: "", foto: "", puertos: [], edit: false });
     }
-    setFormErrors({});
     setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const validateForm = () => {
-    const errors: { nombre?: string; foto?: string } = {};
-
-    if (!formData.nombre) errors.nombre = "El nombre es obligatorio";
-    if (!isEditing && !formData.foto) errors.foto = "La foto es obligatoria";
-    setFormErrors(errors);
-
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-    setLoadingModal(true);
-    try {
-      if (isEditing && editingDestinoId !== null) {
-        await destinoService.update(editingDestinoId, formData);
-        addToast({
-          title: "Destino actualizado",
-          description: "El destino se actualizó correctamente",
-          variant: "solid",
-          color: "secondary",
-        });
-      } else {
-        await destinoService.store(formData);
-        addToast({
-          title: "Destino creado",
-          description: "El destino se agregó correctamente",
-          variant: "solid",
-          color: "secondary",
-        });
-      }
-      refetch && refetch();
-      closeModal();
-    } catch {
-      addToast({
-        title: "Error",
-        description: "Hubo un error al guardar el destino",
-        variant: "solid",
-        color: "danger",
-      });
-    } finally {
-      setLoadingModal(false);
-    }
   };
 
   if (authLoading) return <div className="p-4">Cargando autenticación...</div>;
@@ -226,27 +139,65 @@ const DestinosPage = () => {
         selectionMode="single"
       />
 
-      {modalOpen && <ModeloDestino Data={formData} onClose={setModalOpen} />}
+      {modalOpen && <ModeloDestino Data={formData} onClose={setModalOpen} onSubmit={() => refetch && refetch()}/>}
 
     </div>
   );
 };
 
-function ModeloDestino({ Data, onClose }: { Data: { nombre: string, foto: string, puertos: Puerto[], edit: boolean }, onClose?: (b: boolean) => void }) {
+
+
+
+function ModeloDestino({ Data, onClose, onSubmit, }: { Data: {id: number, nombre: string, foto: string, puertos: Puerto[], edit: boolean }, onClose: (b: boolean) => void, onSubmit: () => void }) {
   const [formData, setFormData] = useState<{
+    id: number;
     nombre: string;
     foto: string;
-    puertos: Puerto[];  // Aquí especificamos que es un array de "Puerto"
+    puertos: Puerto[];
     edit: boolean;
   }>(Data);
   const [loadingModal, setLoadingModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [listaPuertos, SetListaPuertos] = useState<Puerto[]>(formData.puertos)
   const [formErrors, setFormErrors] = useState<{
     nombre?: string;
     foto?: string;
   }>({});
 
+  const validateForm = () => {
+    const errors: { nombre?: string; foto?: string } = {};
+
+    if (!formData.nombre) errors.nombre = "El nombre es obligatorio";
+    setFormErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
+
+  /*
+    David, vea. Esta la variable de ListaPuertos la cual es la que se edita, y en la variable formData va un parametro
+    puertos el cual es la lista original.
+    Hay que enviar ambas listas de puertos, para que, en caso de ser un push se cree todo lo que esta en la listaPuertos.
+    En caso de ser un patch, se debe comprar la lista original "formData.puertos" y la listaPuertos, 
+    con el fin de identificar cuales se eliminaron, cuales se editaron y cuales se añadieron
+  */
   const handleSubmit = async () => {
+    if (!validateForm()) return;
+    setLoadingModal(true);
+    try {
+      if (formData.edit) {
+        await destinoService.update(formData.id, formData);
+        toast.success("El destino se actualizo correctamente")
+      } else {
+        await destinoService.store(formData);
+        toast.success("El destino se agrego correctamente")
+      }
+      if (onSubmit) {onSubmit()};
+      handleClose();
+    } catch {
+      toast.error("Hubo un problema al guardar el destino")
+    } finally {
+      setLoadingModal(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -366,7 +317,7 @@ function ModeloDestino({ Data, onClose }: { Data: { nombre: string, foto: string
                 <div className="flex-grow">
                   <h3 className="block font-semibold mb-1 mx-auto">Lista de Puertos:</h3>
                   <div className="w-full">
-                    <ModeloPuerto ListaPuertos={formData.puertos} />
+                    <ModeloPuerto ListaPuertos={listaPuertos} onChangePuertos={SetListaPuertos}/>
                   </div>
                 </div>
 
@@ -380,6 +331,9 @@ function ModeloDestino({ Data, onClose }: { Data: { nombre: string, foto: string
   );
 
 }
+
+
+
 
 function ModeloPuerto({
   ListaPuertos,

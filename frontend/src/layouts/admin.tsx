@@ -19,6 +19,7 @@ import ItinerariosPage from "@/pages/admin/itinerarios";
 import DetallesHabitacionPage from "@/pages/admin/detallesHabitacion";
 import PreciosHabitacionPage from "@/pages/admin/preciosHabitacion";
 import Pruebas from "@/pages/admin/pruebas";
+import { Provider } from "@/types/provider";
 
 export default function DefaultLayout() {
   const [select, setSelct] = useState(0);
@@ -38,7 +39,7 @@ export default function DefaultLayout() {
     setSelct(getSelectedIndex());
   }, [location.pathname]);
 
-  const getIcon = (menu) => {
+  const getIcon = (menu: string) => {
     switch (menu) {
       case "Dashboard":
         return <i className="fi fi-rr-dashboard-panel" />;

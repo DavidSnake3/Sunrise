@@ -31,13 +31,11 @@ class DestinoController extends Controller
         $destinos = $query->get();
         return DestinoResource::collection($destinos);
     }
-    
     public function getById($id)
     {
         $destino = Destino::with('puertos')->findOrFail($id);
         return new DestinoResource($destino);
     }
-
     public function getAllPuertos(Request $request)
     {
         $request->validate([
